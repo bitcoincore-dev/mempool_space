@@ -5,8 +5,8 @@ cargo-help:### 	cargo-help
 	@awk 'BEGIN {FS = ":.*?###"} /^[a-zA-Z_-]+:.*?###/ {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 cargo-release-all:### 	cargo-release-all
 ## 	cargo-release-all 	recursively cargo build --release
-	for t in */Cargo.toml;  do echo $$t; cargo b -r -vv --manifest-path $$t; done
-	for t in ffi/*/Cargo.toml;  do echo $$t; cargo b -r -vv --manifest-path $$t; done
+	for t in examples/*/Cargo.toml;  do echo $$t; cargo b -r -vv --manifest-path $$t; done
+	##for t in examples/*/Cargo.toml;  do echo $$t; cargo install -vv --manifest-path $$t; done
 cargo-clean-all:### 	cargo-clean-all - clean release artifacts
 ## 	cargo-clean-all 	recursively cargo clean --release
 	for t in */Cargo.toml;  do echo $$t; cargo clean --release -vv --manifest-path $$t; done
@@ -82,4 +82,3 @@ cargo-dist-manifest-global:### 	cargo dist manifest --artifacts=all
 	cargo dist manifest --artifacts=all
 # vim: set noexpandtab:
 # vim: set setfiletype make
->>>>>>> 43c74bc4a (cargo.mk:cargo-deps-gnostr-cli/grep)
