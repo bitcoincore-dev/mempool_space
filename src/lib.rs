@@ -12,11 +12,18 @@
 //!
 //! Additionally this crate contains asynchronous utilities to execute these checks regularly
 //! within a given time interval.
+use crate::blockheight::blockheight;
 
 // Modules
+pub mod blockheight;
 pub mod error;
 pub mod resolve_policy;
 pub mod target;
+pub fn get_blockheight() -> Result<String, &'static str> {
+    let _blockheight_no_nl = blockheight().unwrap().to_string();
+
+    Ok(format!("{}", blockheight().unwrap().to_string()))
+}
 
 #[cfg(feature = "async")]
 pub mod async_target;

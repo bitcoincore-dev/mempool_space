@@ -5,7 +5,7 @@ use reachable::get_blockheight;
 use reqwest::Url;
 use tokio::runtime::Runtime;
 
-//use ureq::get;
+// use ureq::get;
 
 const URL: &str = "https://mempool.space/api/blocks/tip/height";
 
@@ -58,7 +58,7 @@ async fn non_blocking(n: usize) -> usize {
                 let seconds = since_the_epoch.as_secs();
                 let subsec_millis = since_the_epoch.subsec_millis() as u64;
                 let now_millis = seconds * 1000 + subsec_millis;
-                //println!("now millis: {}", seconds * 1000 + subsec_millis);
+                // println!("now millis: {}", seconds * 1000 + subsec_millis);
 
                 let _ = get_blockheight();
                 let url = Url::parse(URL).unwrap();
@@ -66,23 +66,23 @@ async fn non_blocking(n: usize) -> usize {
 
                 let mut tmp_string = String::new();
                 res.read_to_string(&mut tmp_string).unwrap();
-                //println!("{}", format!("{:?}", res));
+                // println!("{}", format!("{:?}", res));
                 let tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
                 println!("{}", format!("{:?}", tmp_u64));
 
-                //TODO:impl gnostr-weeble_millis
-                //let weeble = now_millis as f64 / tmp_u64 as f64;
-                //let weeble = seconds as f64 / tmp_u64 as f64;
-                //println!("{}", format!("{}", weeble.floor()));
+                // TODO:impl gnostr-weeble_millis
+                // let weeble = now_millis as f64 / tmp_u64 as f64;
+                // let weeble = seconds as f64 / tmp_u64 as f64;
+                // println!("{}", format!("{}", weeble.floor()));
 
                 let body = reqwest::get(URL).await.unwrap().bytes();
                 body.await.unwrap().len()
                 // print block count from mempool.space or panic
-                //let text = match std::str::from_utf8(&body) {
+                // let text = match std::str::from_utf8(&body) {
                 //    Ok(s) => s,
                 //    Err(_) => panic!("Invalid ASCII data"),
                 //};
-                //println!("{}", text);
+                // println!("{}", text);
             })
         })
         .collect::<Vec<_>>();
