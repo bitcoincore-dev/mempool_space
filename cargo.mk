@@ -6,7 +6,7 @@ cargo-help:### 	cargo-help
 cargo-release-all:### 	cargo-release-all
 ## 	cargo-release-all 	recursively cargo build --release
 	for t in examples/*/Cargo.toml;  do echo $$t; cargo b -r -vv --manifest-path $$t; done
-	##for t in examples/*/Cargo.toml;  do echo $$t; cargo install -vv --manifest-path $$t; done
+	for t in examples/*;  do cd $$t; cargo install --path .; cd ../..; done
 cargo-clean-all:### 	cargo-clean-all - clean release artifacts
 ## 	cargo-clean-all 	recursively cargo clean --release
 	for t in */Cargo.toml;  do echo $$t; cargo clean --release -vv --manifest-path $$t; done
@@ -14,13 +14,12 @@ cargo-publish-all:### 	cargo-publish-all
 ## 	cargo-clean-all 	recursively publish rust projects
 	for t in */Cargo.toml;  do echo $$t; cargo publish -vv --manifest-path $$t; done
 
-cargo-install-bins:### 	cargo-install-bins
+cargo-install-examples:### 	cargo-install-examples
 ## 	cargo-install-all 	recursively cargo install -vv $(SUBMODULES)
 ## 	*** cargo install -vv --force is NOT used.
 ## 	*** cargo install -vv --force --path <path>
 ## 	*** to overwrite deploy cargo.io crates.
-	export RUSTFLAGS=-Awarning;  for t in $(SUBMODULES); do echo $$t; cargo install --bins --path  $$t -vv 2>/dev/null || echo ""; done
-	#for t in $(SUBMODULES); do echo $$t; cargo install -vv gnostr-$$t --force || echo ""; done
+	export RUSTFLAGS=-Awarning; for t in examples/*;  do cd $$t; cargo install --path . -vv; cd ../..; done
 
 cargo-b:cargo-build### 	cargo b
 cargo-build:### 	cargo build
