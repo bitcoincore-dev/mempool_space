@@ -245,7 +245,12 @@ impl TcpTarget {
     ///
     /// # Notes
     /// For more convenience use the implementations of trait "From" and "FromStr".
-    pub fn new(fqhn: Fqhn, port: Port, connect_timeout: Duration, resolve_policy: ResolvePolicy) -> Self {
+    pub fn new(
+        fqhn: Fqhn,
+        port: Port,
+        connect_timeout: Duration,
+        resolve_policy: ResolvePolicy,
+    ) -> Self {
         TcpTarget {
             fqhn,
             port,
@@ -443,13 +448,19 @@ mod tests {
     #[test]
     fn icmp_target_from_str_invalid() {
         // Expectency: The IcmpTarget returns an error if fqhn is an empty string.
-        assert_eq!(format!("{}", IcmpTarget::from_str("").unwrap_err()), "No FQHN found");
+        assert_eq!(
+            format!("{}", IcmpTarget::from_str("").unwrap_err()),
+            "No FQHN found"
+        );
     }
 
     #[test]
     fn icmp_target_get_id() {
         // Expectency: get_id must return the FQHN for ICMP targets
-        assert_eq!(IcmpTarget::from_str("www.google.de").unwrap().get_id(), "www.google.de");
+        assert_eq!(
+            IcmpTarget::from_str("www.google.de").unwrap().get_id(),
+            "www.google.de"
+        );
         assert_eq!(IcmpTarget::from(Ipv4Addr::LOCALHOST).get_id(), "127.0.0.1");
     }
 
@@ -623,14 +634,22 @@ mod tests {
             TcpTarget::from_str("www.google.de:1024").unwrap().get_id(),
             "www.google.de:1024"
         );
-        assert_eq!(TcpTarget::from((Ipv4Addr::LOCALHOST, 23)).get_id(), "127.0.0.1:23");
+        assert_eq!(
+            TcpTarget::from((Ipv4Addr::LOCALHOST, 23)).get_id(),
+            "127.0.0.1:23"
+        );
     }
 
     #[test]
     fn tcp_target_check_availability() {
         // Expectency: check_availability must return Status::Available if a peer accepts a
         //             connection.
-        let srv = spawn(|| TcpListener::bind("127.0.0.1:24211").unwrap().accept().unwrap());
+        let srv = spawn(|| {
+            TcpListener::bind("127.0.0.1:24211")
+                .unwrap()
+                .accept()
+                .unwrap()
+        });
         sleep(Duration::from_millis(500));
 
         // Connect to local TCP connection
@@ -667,7 +686,8 @@ mod tests {
     fn tcp_target_check_availability_all_addresses_filtered_error_v4() {
         // Expectency: check_availability must return an error if all resolved
         //             IPv4 addresses were discarded by the ResolvePolicy
-        let target = TcpTarget::from((Ipv4Addr::LOCALHOST, 1024)).set_resolve_policy(ResolvePolicy::ResolveToIPv6);
+        let target = TcpTarget::from((Ipv4Addr::LOCALHOST, 1024))
+            .set_resolve_policy(ResolvePolicy::ResolveToIPv6);
         let status = target.check_availability();
         assert_eq!(
             format!("{}", status.unwrap_err()),
@@ -679,7 +699,8 @@ mod tests {
     fn tcp_target_check_availability_all_addresses_filtered_error_v6() {
         // Expectency: check_availability must return an error if all resolved
         //             IPv6 addresses were discarded by the ResolvePolicy
-        let target = TcpTarget::from((Ipv6Addr::LOCALHOST, 1024)).set_resolve_policy(ResolvePolicy::ResolveToIPv4);
+        let target = TcpTarget::from((Ipv6Addr::LOCALHOST, 1024))
+            .set_resolve_policy(ResolvePolicy::ResolveToIPv4);
         let status = target.check_availability();
         assert_eq!(
             format!("{}", status.unwrap_err()),

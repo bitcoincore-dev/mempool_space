@@ -27,7 +27,8 @@ pub type OldStatus = Status;
 pub type BoxedTarget<'a> = Box<dyn Target + Send + 'a>;
 
 /// Type containing a boxed trait object implementing [FnMut] that is called with each async check.
-pub type BoxedHandler<'a> = Box<dyn FnMut(&dyn Target, Status, OldStatus, Option<CheckTargetError>) + Send + 'a>;
+pub type BoxedHandler<'a> =
+    Box<dyn FnMut(&dyn Target, Status, OldStatus, Option<CheckTargetError>) + Send + 'a>;
 
 /// Struct storing all data used during asynchronous execution.
 ///
@@ -50,7 +51,11 @@ impl<'a> AsyncTarget<'a> {
     ///
     /// # Returns
     /// Instance of [AsyncTarget].
-    pub fn new(target: BoxedTarget<'a>, check_handler: BoxedHandler<'a>, check_interval: Duration) -> Self {
+    pub fn new(
+        target: BoxedTarget<'a>,
+        check_handler: BoxedHandler<'a>,
+        check_interval: Duration,
+    ) -> Self {
         AsyncTarget {
             target,
             check_handler,
@@ -85,9 +90,7 @@ pub struct AsyncTargetExecutor {
 impl AsyncTargetExecutor {
     /// Construct a new [AsyncTargetExecutor]
     pub fn new() -> Self {
-        AsyncTargetExecutor {
-            worker: None,
-        }
+        AsyncTargetExecutor { worker: None }
     }
 
     /// Start periodic availability checks for all given targets
@@ -120,7 +123,10 @@ impl AsyncTargetExecutor {
         if self.worker.is_none() {
             // Setup teardown mechanism and construct runtime
             let (teardown_send, teardown_recv) = watch::channel(());
-            let runtime = runtime::Builder::new_multi_thread().enable_time().build().unwrap();
+            let runtime = runtime::Builder::new_multi_thread()
+                .enable_time()
+                .build()
+                .unwrap();
 
             // Convert all targets into BoxFutures and execute them afterwards
             let tasks: Vec<BoxFuture<()>> = targets
@@ -166,7 +172,10 @@ impl Drop for AsyncTargetExecutor {
     }
 }
 
-async fn check_target_periodically(mut target: AsyncTarget<'static>, mut teardown_recv: Receiver<()>) {
+async fn check_target_periodically(
+    mut target: AsyncTarget<'static>,
+    mut teardown_recv: Receiver<()>,
+) {
     loop {
         target = select! {
             // Teardown message was not received. Perform next check.
@@ -245,32 +254,37 @@ mod tests {
 
         // Prepare Handler to verify given expectations
         let (send, recv) = mpsc::channel();
-        let handler = move |_: &dyn Target, new: Status, old: OldStatus, error: Option<CheckTargetError>| {
-            match old {
-                // Verify expectency of the first call to check_availability
-                Status::Unknown => {
-                    assert_eq!(new, Status::Available);
-                    assert_eq!(error.is_none(), true);
+        let handler =
+            move |_: &dyn Target, new: Status, old: OldStatus, error: Option<CheckTargetError>| {
+                match old {
+                    // Verify expectency of the first call to check_availability
+                    Status::Unknown => {
+                        assert_eq!(new, Status::Available);
+                        assert_eq!(error.is_none(), true);
+                    }
+                    // Verify expectency of the second call to check_availability
+                    Status::Available => {
+                        assert_eq!(new, Status::NotAvailable);
+                        assert_eq!(error.is_none(), true);
+                    }
+                    // Verify expectency of the third call to check_availability. Stop handler.
+                    Status::NotAvailable => {
+                        assert_eq!(new, Status::Unknown);
+                        assert_eq!(error.is_some(), true);
+                        let error = error.unwrap();
+                        assert_eq!(format!("{}", error), "Error");
+                        send.send(()).unwrap();
+                    }
                 }
-                // Verify expectency of the second call to check_availability
-                Status::Available => {
-                    assert_eq!(new, Status::NotAvailable);
-                    assert_eq!(error.is_none(), true);
-                }
-                // Verify expectency of the third call to check_availability. Stop handler.
-                Status::NotAvailable => {
-                    assert_eq!(new, Status::Unknown);
-                    assert_eq!(error.is_some(), true);
-                    let error = error.unwrap();
-                    assert_eq!(format!("{}", error), "Error");
-                    send.send(()).unwrap();
-                }
-            }
-        };
+            };
 
         // Run test
         let mut exec = AsyncTargetExecutor::new();
-        exec.start(vec![AsyncTarget::from((mock, handler, Duration::from_millis(100)))]);
+        exec.start(vec![AsyncTarget::from((
+            mock,
+            handler,
+            Duration::from_millis(100),
+        ))]);
         recv.recv().unwrap();
         exec.stop();
     }

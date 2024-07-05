@@ -64,7 +64,9 @@ impl ResolvePolicy {
         };
 
         if addrs.is_empty() {
-            Err(ResolveTargetError::from("Given Policy filtered all resolved addresses"))
+            Err(ResolveTargetError::from(
+                "Given Policy filtered all resolved addresses",
+            ))
         } else {
             Ok(addrs)
         }

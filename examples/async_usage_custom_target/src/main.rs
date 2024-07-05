@@ -32,7 +32,11 @@ fn main() {
         println!(", new status \"{}\"", status);
     };
 
-    let targets = vec![AsyncTarget::from((my_target, handler, Duration::from_secs(1)))];
+    let targets = vec![AsyncTarget::from((
+        my_target,
+        handler,
+        Duration::from_secs(1),
+    ))];
 
     // Spawn async executor
     let mut exec = AsyncTargetExecutor::new();

@@ -246,7 +246,8 @@ mod tests {
     fn parse_target_error_from_boxed_error_trait_object() {
         // Expectency: A ParseTargetError must contain its error message and the description
         //             of the inner boxed error trait object.
-        let boxed_error: Box<dyn Error> = Box::new(io::Error::from(io::ErrorKind::AddrNotAvailable));
+        let boxed_error: Box<dyn Error> =
+            Box::new(io::Error::from(io::ErrorKind::AddrNotAvailable));
         assert_eq!(
             format!("{}", ParseTargetError::from(boxed_error)),
             "GenericError caused by: address not available"
@@ -280,7 +281,10 @@ mod tests {
         // Expectency: A ResolveTargetError must contain its error message and the description
         //             of the inner io::Error.
         assert_eq!(
-            format!("{}", ResolveTargetError::from(io::Error::from(io::ErrorKind::Other))),
+            format!(
+                "{}",
+                ResolveTargetError::from(io::Error::from(io::ErrorKind::Other))
+            ),
             "IoError caused by: other error"
         );
     }
@@ -310,7 +314,8 @@ mod tests {
     fn check_target_error_from_resolve_target_error() {
         // Expectency: A CheckTargetError must contain its error message and an instance of
         //             ResolveTargetError
-        let resolve_target_error = ResolveTargetError::from(io::Error::from(io::ErrorKind::AddrNotAvailable));
+        let resolve_target_error =
+            ResolveTargetError::from(io::Error::from(io::ErrorKind::AddrNotAvailable));
         assert_eq!(
             format!("{}", CheckTargetError::from(resolve_target_error)),
             "ResolveTargetError caused by: IoError caused by: address not available"
@@ -321,7 +326,8 @@ mod tests {
     fn check_target_error_from_boxed_error_trait_object() {
         // Expectency: A CheckTargetError must contain its error message and the description
         //             of the inner boxed error trait object.
-        let boxed_error: Box<dyn Error> = Box::new(io::Error::from(io::ErrorKind::AddrNotAvailable));
+        let boxed_error: Box<dyn Error> =
+            Box::new(io::Error::from(io::ErrorKind::AddrNotAvailable));
         assert_eq!(
             format!("{}", CheckTargetError::from(boxed_error)),
             "GenericError caused by: address not available"
