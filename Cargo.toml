@@ -7,7 +7,7 @@ description = "mempool.space api-rust"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/bitcoincore-dev/mempool_space.git"
-keywords = ["mempool-space","mempool","bitcoin", "async"]
+keywords = ["mempool-space", "mempool", "bitcoin", "async"]
 categories = ["network-programming"]
 
 [dependencies]
