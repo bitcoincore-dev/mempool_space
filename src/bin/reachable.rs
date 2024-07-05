@@ -13,14 +13,14 @@ const URL: &str = "https://mempool.space/api/v1/prices";
 fn main() {
     let n = 1;
     {
-        let start = Instant::now();
-        let res = blocking(n);
+        let _start = Instant::now();
+        let _res = blocking(n);
         //println!("blocking {:?} {} bytes", start.elapsed(), res);
     }
     {
-        let start = Instant::now();
-        let rt = tokio::runtime::Runtime::new().unwrap();
-        let res = rt.block_on(non_blocking(n));
+        let _start = Instant::now();
+        let _rt = tokio::runtime::Runtime::new().unwrap();
+        let _res = _rt.block_on(non_blocking(n));
         //println!("async    {:?} {} bytes", start.elapsed(), res);
     }
 }
@@ -68,7 +68,7 @@ async fn non_blocking(n: usize) -> usize {
                 let mut tmp_string = String::new();
                 res.read_to_string(&mut tmp_string).unwrap();
                 // println!("{}", format!("{:?}", res));
-                let tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
+                let _tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
                 // println!("{}", format!("{:?}", tmp_u64));
 
                 // TODO:impl gnostr-weeble_millis
