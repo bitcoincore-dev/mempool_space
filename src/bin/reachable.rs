@@ -6,20 +6,22 @@ use reqwest::Url;
 
 // use ureq::get;
 
-const URL: &str = "https://mempool.space/api/blocks/tip/height";
+//const URL: &str = "https://mempool.space/api/blocks/tip/height";
+//const URL: &str = "https://mempool.space/api/v1/difficulty-adjustment";
+const URL: &str = "https://mempool.space/api/v1/prices";
 
 fn main() {
     let n = 1;
     {
         let start = Instant::now();
         let res = blocking(n);
-        println!("blocking {:?} {} bytes", start.elapsed(), res);
+        //println!("blocking {:?} {} bytes", start.elapsed(), res);
     }
     {
         let start = Instant::now();
         let rt = tokio::runtime::Runtime::new().unwrap();
         let res = rt.block_on(non_blocking(n));
-        println!("async    {:?} {} bytes", start.elapsed(), res);
+        //println!("async    {:?} {} bytes", start.elapsed(), res);
     }
 }
 
@@ -36,7 +38,7 @@ fn blocking(n: usize) -> usize {
                     Ok(s) => s,
                     Err(_) => panic!("Invalid ASCII data"),
                 };
-                println!("{}", text);
+                print!("{}", text);
                 buf.len()
             })
         })
@@ -67,7 +69,7 @@ async fn non_blocking(n: usize) -> usize {
                 res.read_to_string(&mut tmp_string).unwrap();
                 // println!("{}", format!("{:?}", res));
                 let tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
-                println!("{}", format!("{:?}", tmp_u64));
+                // println!("{}", format!("{:?}", tmp_u64));
 
                 // TODO:impl gnostr-weeble_millis
                 // let weeble = now_millis as f64 / tmp_u64 as f64;
@@ -81,7 +83,7 @@ async fn non_blocking(n: usize) -> usize {
                 //    Ok(s) => s,
                 //    Err(_) => panic!("Invalid ASCII data"),
                 //};
-                // println!("{}", text);
+                //println!("{}", text);
             })
         })
         .collect::<Vec<_>>();
