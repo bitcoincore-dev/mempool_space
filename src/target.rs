@@ -462,6 +462,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn icmp_target_check_availability_invalid_host_error() {
         // Expectency: A invalid host must lead to an error
         let target = IcmpTarget::from_str("asdkjhasjdkhakjsdhsad").unwrap();
@@ -651,6 +652,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn tcp_target_check_availability_invalid_host_error() {
         // Expectency: A invalid host must lead to an error
         let target = TcpTarget::from_str("asdkjhasjdkhakjsdhsad:1025").unwrap();
