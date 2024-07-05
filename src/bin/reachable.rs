@@ -1,9 +1,8 @@
 use std::io::Read;
-use std::time::{Instant, SystemTime, UNIX_EPOCH};
+use std::time::{Instant, SystemTime};
 
 use reachable::get_blockheight;
 use reqwest::Url;
-use tokio::runtime::Runtime;
 
 // use ureq::get;
 
@@ -18,7 +17,7 @@ fn main() {
     }
     {
         let start = Instant::now();
-        let mut rt = tokio::runtime::Runtime::new().unwrap();
+        let rt = tokio::runtime::Runtime::new().unwrap();
         let res = rt.block_on(non_blocking(n));
         println!("async    {:?} {} bytes", start.elapsed(), res);
     }
@@ -57,8 +56,8 @@ async fn non_blocking(n: usize) -> usize {
                     .expect("get millis error");
                 let seconds = since_the_epoch.as_secs();
                 let subsec_millis = since_the_epoch.subsec_millis() as u64;
-                let now_millis = seconds * 1000 + subsec_millis;
-                // println!("now millis: {}", seconds * 1000 + subsec_millis);
+                let _now_millis = seconds * 1000 + subsec_millis;
+                // println!("_now_millis: {}", seconds * 1000 + subsec_millis);
 
                 let _ = get_blockheight();
                 let url = Url::parse(URL).unwrap();
