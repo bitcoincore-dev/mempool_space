@@ -38,7 +38,7 @@ fn blocking(n: usize) -> usize {
                     Ok(s) => s,
                     Err(_) => panic!("Invalid ASCII data"),
                 };
-                print!("{}", text);
+                print!("{}\n", text);
                 buf.len()
             })
         })
@@ -67,7 +67,7 @@ async fn non_blocking(n: usize) -> usize {
 
                 let mut tmp_string = String::new();
                 res.read_to_string(&mut tmp_string).unwrap();
-                // println!("{}", format!("{:?}", res));
+                print!("{}\n", format!("{:?}", res));
                 let _tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
                 // println!("{}", format!("{:?}", tmp_u64));
 
