@@ -1,13 +1,13 @@
 [package]
-name = "reachable"
-version = "0.2.2"
+name = "mempool_space"
+version = "0.0.1"
 edition = "2021"
-authors = ["Simon Brummer <simon.brummer@posteo.de>"]
-description = "Check if a Target (ICMP, TCP, custom) is reachable."
+authors = ["RandyMcMillan <randy.lee.mcmillan@gmail.com>", "Simon Brummer <simon.brummer@posteo.de>"]
+description = "mempool.space api interface."
 license = "MPL-2.0"
 readme = "README.md"
-repository = "https://github.com/brummer-simon/reachable.git"
-keywords = ["network", "async"]
+repository = "https://github.com/randymcmillan/mempool_space.git"
+keywords = ["bitcoin", "mempool"]
 categories = ["network-programming"]
 
 [dependencies]
