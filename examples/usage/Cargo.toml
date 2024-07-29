@@ -7,4 +7,4 @@ license = "MPL-2.0"
 description = "Example: usage of reachable"
 
 [dependencies]
-reachable = {path = "../.."}
+mempool_space = {path = "../.."}

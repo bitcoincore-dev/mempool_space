@@ -7,4 +7,4 @@ license = "MPL-2.0"
 description = "Example: async usage of reachable with custom target"
 
 [dependencies]
-reachable = {path = "../..", features = ["async"]}
+mempool_space = {path = "../..", features = ["async"]}
