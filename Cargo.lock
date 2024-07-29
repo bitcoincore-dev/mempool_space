@@ -34,14 +34,14 @@ checksum = "d92bec98840b8f03a5ff5413de5293bfcd8bf96467cf5452609f939ec6f5de16"
 
 [[package]]
 name = "async_usage"
-version = "0.1.0"
+version = "0.0.3"
 dependencies = [
  "mempool_space",
 ]
 
 [[package]]
 name = "async_usage_custom_target"
-version = "0.1.0"
+version = "0.0.3"
 dependencies = [
  "mempool_space",
 ]
@@ -1129,7 +1129,7 @@ dependencies = [
 
 [[package]]
 name = "usage"
-version = "0.1.0"
+version = "0.0.3"
 dependencies = [
  "mempool_space",
 ]

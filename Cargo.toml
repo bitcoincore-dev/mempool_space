@@ -7,6 +7,7 @@ description = "mempool.space api interface."
 license = "MPL-2.0"
 readme = "README.md"
 repository = "https://github.com/randymcmillan/mempool_space.git"
+homepage = "https://github.com/randymcmillan/mempool_space"
 keywords = ["bitcoin", "mempool"]
 categories = ["network-programming"]
 

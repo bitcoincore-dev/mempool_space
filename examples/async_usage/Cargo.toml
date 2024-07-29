@@ -1,10 +1,11 @@
 [package]
 name = "async_usage"
-version = "0.1.0"
+version = "0.0.3"
 edition = "2021"
 authors = ["Simon Brummer <simon.brummer@posteo.de>"]
 license = "MPL-2.0"
-description = "Example: async usage of reachable"
+description = "Example: async usage of mempool_space"
+homepage = "https://github.com/randymcmillan/mempool_space"
 
 [dependencies]
 mempool_space = {path = "../..", features = ["async"]}
