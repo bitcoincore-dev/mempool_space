@@ -16,13 +16,13 @@ fn main() {
     {
         let start = Instant::now();
         let res = blocking(n);
-        println!("blocking {:?} {} bytes", start.elapsed(), res);
+        //println!("blocking {:?} {} bytes", start.elapsed(), res);
     }
     {
         let start = Instant::now();
         let rt = tokio::runtime::Runtime::new().unwrap();
         let res = rt.block_on(non_blocking(n));
-        println!("async    {:?} {} bytes", start.elapsed(), res);
+        //println!("async    {:?} {} bytes", start.elapsed(), res);
     }
 }
 
