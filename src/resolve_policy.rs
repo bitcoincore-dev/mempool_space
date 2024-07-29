@@ -43,7 +43,7 @@ impl ResolvePolicy {
     /// # Example
     /// ```
     /// # use std::net::{IpAddr, Ipv4Addr};
-    /// # use reachable::ResolvePolicy;
+    /// # use mempool_space::ResolvePolicy;
     ///
     /// // FQHN was resolved
     /// assert_eq!(

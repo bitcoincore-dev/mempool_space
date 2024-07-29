@@ -100,7 +100,7 @@ impl AsyncTargetExecutor {
     /// # Example
     /// ```
     /// # use std::{str::FromStr, thread::sleep, time::Duration};
-    /// # use reachable::*;
+    /// # use mempool_space::*;
     ///
     /// // Setup AsyncTarget
     /// let target = IcmpTarget::from_str("127.0.0.1").unwrap();
