@@ -1,6 +1,6 @@
 [package]
 name = "usage"
-version = "0.0.3"
+version = { workspace = true }
 edition = "2021"
 authors = ["Simon Brummer <simon.brummer@posteo.de>"]
 license = "MPL-2.0"
