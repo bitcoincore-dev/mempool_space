@@ -8,21 +8,21 @@ use reqwest::Url;
 
 const URL: &str = "https://mempool.space/api/v1/difficulty-adjustment";
 
-//const URL: &str = "https://mempool.space/api/blocks/tip";
-//const URL: &str = "https://mempool.space/api/blocks/tip/height";
+// const URL: &str = "https://mempool.space/api/blocks/tip";
+// const URL: &str = "https://mempool.space/api/blocks/tip/height";
 
 fn main() {
     let n = 1;
     {
         let start = Instant::now();
         let res = blocking(n);
-        //println!("blocking {:?} {} bytes", start.elapsed(), res);
+        // println!("blocking {:?} {} bytes", start.elapsed(), res);
     }
     {
         let start = Instant::now();
         let rt = tokio::runtime::Runtime::new().unwrap();
         let res = rt.block_on(non_blocking(n));
-        //println!("async    {:?} {} bytes", start.elapsed(), res);
+        // println!("async    {:?} {} bytes", start.elapsed(), res);
     }
 }
 

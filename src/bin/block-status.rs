@@ -6,7 +6,8 @@ use reqwest::Url;
 
 // use ureq::get;
 
-const URL: &str = "https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/status";
+const URL: &str =
+    "https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/status";
 
 fn main() {
     let n = 1;

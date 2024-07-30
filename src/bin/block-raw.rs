@@ -6,10 +6,11 @@ use reqwest::Url;
 
 // use ureq::get;
 
-//REF:
+// REF:
 //    Usage:
 //         curl -sSL "https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/raw" | hexdump
-const URL: &str = "https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/raw";
+const URL: &str =
+    "https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/raw";
 
 fn main() {
     let n = 1;
@@ -34,7 +35,7 @@ fn blocking(n: usize) -> usize {
                 let mut body = ureq::get(URL).call().expect("REASON").into_reader();
                 let mut buf = Vec::new();
                 body.read_to_end(&mut buf).unwrap();
-                //body.read_to_end(&mut buf).unwrap();
+                // body.read_to_end(&mut buf).unwrap();
                 // print block count from mempool.space or panic
                 // let text = match std::str::from_utf8(&buf) {
                 //     Ok(s) => s,
@@ -50,7 +51,7 @@ fn blocking(n: usize) -> usize {
         .sum()
 }
 
-//async fn non_blocking(n: usize) -> usize {
+// async fn non_blocking(n: usize) -> usize {
 //    // let tasks = (0..n)
 //    //     .into_iter()
 //    //     .map(|_| {

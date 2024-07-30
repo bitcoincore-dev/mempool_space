@@ -13,10 +13,9 @@
 //! Additionally this crate contains asynchronous utilities to execute these checks regularly
 //! within a given time interval.
 
-
-use std::time::SystemTime;
-use std::io::Read;
 use reqwest::Url;
+use std::io::Read;
+use std::time::SystemTime;
 
 use crate::blockheight::blockheight;
 

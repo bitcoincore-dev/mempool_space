@@ -7,8 +7,8 @@ use reqwest::Url;
 // use ureq::get;
 
 const URL: &str = "https://mempool.space/api/blocks";
-//const URL: &str = "https://mempool.space/api/blocks/tip";
-//const URL: &str = "https://mempool.space/api/blocks/tip/height";
+// const URL: &str = "https://mempool.space/api/blocks/tip";
+// const URL: &str = "https://mempool.space/api/blocks/tip/height";
 
 fn main() {
     let n = 1;
