@@ -1,6 +1,6 @@
 [package]
 name = "mempool_space"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["RandyMcMillan <randy.lee.mcmillan@gmail.com>", "Simon Brummer <simon.brummer@posteo.de>"]
 description = "mempool.space api interface."
