@@ -1,6 +1,9 @@
+[workspace.package]
+version = "0.0.5"
+
 [package]
 name = "mempool_space"
-version = "0.0.4"
+version = { workspace = true }
 edition = "2021"
 authors = ["RandyMcMillan <randy.lee.mcmillan@gmail.com>", "Simon Brummer <simon.brummer@posteo.de>"]
 description = "mempool.space api interface."
@@ -33,9 +36,6 @@ members = [
     "examples/async_usage_custom_target",
     "examples/usage",
 ]
-
-[workspace.package]
-version = "0.0.4"
 
 # Config for 'cargo dist'
 [workspace.metadata.dist]

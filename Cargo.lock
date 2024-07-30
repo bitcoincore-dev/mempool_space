@@ -34,14 +34,14 @@ checksum = "d92bec98840b8f03a5ff5413de5293bfcd8bf96467cf5452609f939ec6f5de16"
 
 [[package]]
 name = "async_usage"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "mempool_space",
 ]
 
 [[package]]
 name = "async_usage_custom_target"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "mempool_space",
 ]
@@ -498,7 +498,7 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "mempool_space"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "ascii",
  "dns-lookup",
@@ -1129,7 +1129,7 @@ dependencies = [
 
 [[package]]
 name = "usage"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "mempool_space",
 ]
