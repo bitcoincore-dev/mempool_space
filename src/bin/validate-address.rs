@@ -1,7 +1,7 @@
 use std::io::Read;
 use std::time::{Instant, SystemTime};
 
-use mempool_space::get_blockheight;
+use mempool_space::blocking;
 use reqwest::Url;
 
 // use ureq::get;
@@ -12,8 +12,9 @@ fn main() {
     let n = 1;
     {
         let start = Instant::now();
-        let res = blocking(n);
-        println!("blocking {:?} {} bytes", start.elapsed(), res);
+        let validate_address = String::from("/validate-address");
+        let res = blocking(&validate_address);
+        println!("blocking {:?} {:?} bytes", start.elapsed(), res);
     }
     {
         let start = Instant::now();
@@ -21,29 +22,6 @@ fn main() {
         let res = rt.block_on(non_blocking(n));
         println!("async    {:?} {} bytes", start.elapsed(), res);
     }
-}
-
-fn blocking(n: usize) -> usize {
-    (0..n)
-        .into_iter()
-        .map(|_| {
-            std::thread::spawn(|| {
-                let mut body = ureq::get(URL).call().expect("REASON").into_reader();
-                let mut buf = Vec::new();
-                body.read_to_end(&mut buf).unwrap();
-                // print block count from mempool.space or panic
-                let text = match std::str::from_utf8(&buf) {
-                    Ok(s) => s,
-                    Err(_) => panic!("Invalid ASCII data"),
-                };
-                println!("{}", text);
-                buf.len()
-            })
-        })
-        .collect::<Vec<_>>()
-        .into_iter()
-        .map(|it| it.join().unwrap())
-        .sum()
 }
 
 async fn non_blocking(n: usize) -> usize {
@@ -59,7 +37,7 @@ async fn non_blocking(n: usize) -> usize {
                 let _now_millis = seconds * 1000 + subsec_millis;
                 // println!("_now_millis: {}", seconds * 1000 + subsec_millis);
 
-                let _ = get_blockheight();
+                //let _ = blocking();
                 let url = Url::parse(URL).unwrap();
                 let mut res = reqwest::blocking::get(url).unwrap();
 
