@@ -11,15 +11,15 @@ const URL: &str = "https://mempool.space/api/address/1A1zP1eP5QGefi2DMPTfTL5SLmv
 fn main() {
     let n = 1;
     {
-        let start = Instant::now();
-        let res = blocking(n);
-        println!("blocking {:?} {} bytes", start.elapsed(), res);
+        let _start = Instant::now();
+        let _res = blocking(n);
+        //println!("blocking {:?} {} bytes", start.elapsed(), res);
     }
     {
-        let start = Instant::now();
-        let rt = tokio::runtime::Runtime::new().unwrap();
-        let res = rt.block_on(non_blocking(n));
-        println!("async    {:?} {} bytes", start.elapsed(), res);
+        let _start = Instant::now();
+        let _rt = tokio::runtime::Runtime::new().unwrap();
+        //let _res = _rt.block_on(non_blocking(n));
+        //println!("async    {:?} {} bytes", start.elapsed(), res);
     }
 }
 
@@ -36,7 +36,7 @@ fn blocking(n: usize) -> usize {
                     Ok(s) => s,
                     Err(_) => panic!("Invalid ASCII data"),
                 };
-                println!("{}", text);
+                print!("{}", text);
                 buf.len()
             })
         })
