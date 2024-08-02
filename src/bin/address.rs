@@ -1,8 +1,8 @@
 use std::io::Read;
-use std::time::{Instant, SystemTime};
+use std::time::Instant;
 
-use mempool_space::get_blockheight;
-use reqwest::Url;
+//use mempool_space::get_blockheight;
+//use reqwest::Url;
 
 // use ureq::get;
 
@@ -46,49 +46,49 @@ fn blocking(n: usize) -> usize {
         .sum()
 }
 
-async fn non_blocking(n: usize) -> usize {
-    let tasks = (0..n)
-        .into_iter()
-        .map(|_| {
-            tokio::spawn(async move {
-                let since_the_epoch = SystemTime::now()
-                    .duration_since(SystemTime::UNIX_EPOCH)
-                    .expect("get millis error");
-                let seconds = since_the_epoch.as_secs();
-                let subsec_millis = since_the_epoch.subsec_millis() as u64;
-                let _now_millis = seconds * 1000 + subsec_millis;
-                // println!("_now_millis: {}", seconds * 1000 + subsec_millis);
-
-                let _ = get_blockheight();
-                let url = Url::parse(URL).unwrap();
-                let mut res = reqwest::blocking::get(url).unwrap();
-
-                let mut tmp_string = String::new();
-                res.read_to_string(&mut tmp_string).unwrap();
-                // println!("{}", format!("{:?}", res));
-                let tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
-                println!("{}", format!("{:?}", tmp_u64));
-
-                // TODO:impl gnostr-weeble_millis
-                // let weeble = now_millis as f64 / tmp_u64 as f64;
-                // let weeble = seconds as f64 / tmp_u64 as f64;
-                // println!("{}", format!("{}", weeble.floor()));
-
-                let body = reqwest::get(URL).await.unwrap().bytes();
-                body.await.unwrap().len()
-                // print block count from mempool.space or panic
-                // let text = match std::str::from_utf8(&body) {
-                //    Ok(s) => s,
-                //    Err(_) => panic!("Invalid ASCII data"),
-                //};
-                // println!("{}", text);
-            })
-        })
-        .collect::<Vec<_>>();
-
-    let mut res = 0;
-    for task in tasks {
-        res += task.await.unwrap();
-    }
-    res
-}
+//async fn non_blocking(n: usize) -> usize {
+//    let tasks = (0..n)
+//        .into_iter()
+//        .map(|_| {
+//            tokio::spawn(async move {
+//                let since_the_epoch = SystemTime::now()
+//                    .duration_since(SystemTime::UNIX_EPOCH)
+//                    .expect("get millis error");
+//                let seconds = since_the_epoch.as_secs();
+//                let subsec_millis = since_the_epoch.subsec_millis() as u64;
+//                let _now_millis = seconds * 1000 + subsec_millis;
+//                // println!("_now_millis: {}", seconds * 1000 + subsec_millis);
+//
+//                let _ = get_blockheight();
+//                let url = Url::parse(URL).unwrap();
+//                let mut res = reqwest::blocking::get(url).unwrap();
+//
+//                let mut tmp_string = String::new();
+//                res.read_to_string(&mut tmp_string).unwrap();
+//                // println!("{}", format!("{:?}", res));
+//                let tmp_u64 = tmp_string.parse::<u64>().unwrap_or(0);
+//                println!("{}", format!("{:?}", tmp_u64));
+//
+//                // TODO:impl gnostr-weeble_millis
+//                // let weeble = now_millis as f64 / tmp_u64 as f64;
+//                // let weeble = seconds as f64 / tmp_u64 as f64;
+//                // println!("{}", format!("{}", weeble.floor()));
+//
+//                let body = reqwest::get(URL).await.unwrap().bytes();
+//                body.await.unwrap().len()
+//                // print block count from mempool.space or panic
+//                // let text = match std::str::from_utf8(&body) {
+//                //    Ok(s) => s,
+//                //    Err(_) => panic!("Invalid ASCII data"),
+//                //};
+//                // println!("{}", text);
+//            })
+//        })
+//        .collect::<Vec<_>>();
+//
+//    let mut res = 0;
+//    for task in tasks {
+//        res += task.await.unwrap();
+//    }
+//    res
+//}

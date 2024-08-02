@@ -14,14 +14,14 @@ const URL: &str = "https://mempool.space/api/v1/difficulty-adjustment";
 fn main() {
     let n = 1;
     {
-        let start = Instant::now();
-        let res = blocking(n);
+        let _start = Instant::now();
+        let _res = blocking(n);
         // println!("blocking {:?} {} bytes", start.elapsed(), res);
     }
     {
-        let start = Instant::now();
-        let rt = tokio::runtime::Runtime::new().unwrap();
-        let res = rt.block_on(non_blocking(n));
+        let _start = Instant::now();
+        let _rt = tokio::runtime::Runtime::new().unwrap();
+        let _res = _rt.block_on(non_blocking(n));
         // println!("async    {:?} {} bytes", start.elapsed(), res);
     }
 }

@@ -1,8 +1,8 @@
 use std::io::Read;
-use std::time::{Instant, SystemTime};
+use std::time::Instant;
 
-use mempool_space::get_blockheight;
-use reqwest::Url;
+//use mempool_space::get_blockheight;
+//use reqwest::Url;
 
 // use ureq::get;
 
