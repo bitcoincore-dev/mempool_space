@@ -11,6 +11,6 @@ fn main() {
             //silence is golden
             std::process::exit(0);
         }
-        let _res = blocking(&format!("/block/{}/header", &block));
+        let _res = blocking(&format!("/block-height/{}", &block));
     }
 }
