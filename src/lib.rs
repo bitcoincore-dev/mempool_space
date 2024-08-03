@@ -15,27 +15,20 @@
 
 use std::io::Read;
 
-// use crate::blockheight::blockheight;
-
 const VERSION: &str = "v1";
 const URL: &str = "https://mempool.space/api";
 
 pub fn blocking(api: &String) -> Result<&str, ()> {
     let call = format!("{}/{}", URL, api);
-    // print!("{}", call);
     let mut body = ureq::get(&call).call().expect("REASON").into_reader();
     let mut buf = Vec::new();
     body.read_to_end(&mut buf).unwrap();
-    // print block count from mempool.space or panic
     let text = match std::str::from_utf8(&buf) {
         Ok(s) => s,
         Err(_) => panic!("Invalid ASCII data"),
     };
-    // let api: &str = text;
     print!("{}", text);
-    // print!("{}", api);
     Ok(api)
-    // buf.len()
 }
 
 // Modules
