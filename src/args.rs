@@ -112,7 +112,10 @@ impl Args {
             std::process::exit(0);
         }
         if matches.opt_present("address_txs") {
-            print!("86:address-txs");
+            let address = matches.opt_str("address_txs");
+            //print!("86:address-txs");
+            //TODO support --address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv --address_txs <no arg>
+            generic_sys_call("address_txs", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("block") {
