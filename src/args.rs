@@ -5,37 +5,66 @@ use std::path::PathBuf;
 use std::process;
 
 pub fn generic_sys_call(option: &str, sub_string: &str) {
-    //print!("option={}\n", option);
-    //print!("sub_string={}\n",sub_string);
-    //print!("{}",format!("mempool-space_{}", option));
     use std::process::Command;
-    let output = if cfg!(target_os = "windows") {
-        Command::new(format!("mempool-space_{}", option))
-            .args(["/C", sub_string])
-            .output()
-            .expect("failed to execute process")
-    } else {
-        Command::new(format!("mempool-space_{}", option))
-            .arg(sub_string)
-            //.arg("echo hello")
-            .output()
-            .expect("failed to execute process")
-    };
 
-    let result = String::from_utf8(output.stdout)
-        .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
-        .unwrap();
-    print!("{}", result);
+    if sub_string == "v1" {
+        print!("TODO: support --version v1 api versioning.")
+    } else if sub_string == "v2" {
+        print!("TODO: support --version v2 api versioning.")
+    } else {
+        let output = if cfg!(target_os = "windows") {
+            Command::new(format!("mempool-space_{}", option))
+                .args(["/C", sub_string])
+                .output()
+                .expect("failed to execute process")
+        } else {
+            Command::new(format!("mempool-space_{}", option))
+                .arg(sub_string)
+                //.arg("echo hello")
+                .output()
+                .expect("failed to execute process")
+        };
+
+        let result = String::from_utf8(output.stdout)
+            .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+            .unwrap();
+        print!("{}", result);
+    }
 }
 
 /// Command-line arguments to parse.
 #[derive(Debug, Default)]
 pub struct Args {
-    //mempool api intercepts
+    //REF: https://mempool.space/docs/api/rest
+
+    // VERSION
+    // pub version: Option<String>,
+    // GENERAL
+    /// difficulty_adjustment
+    pub difficulty_adjustment: Option<String>,
+    /// v1/prices
+    pub prices: Option<String>,
+    /// v1/historical-price
+    /// ENDPOINT
+    /// GET /api/v1/historical-price?currency=EUR&timestamp=1500000000
+    /// default USD
+    pub currency: Option<String>,
+    /// default now
+    pub timestamp: Option<String>,
+    pub historical_price: Option<String>,
+
+    // ADDRESSES
     /// address.
     pub address: Option<String>,
     /// address_txs.
     pub address_txs: Option<String>,
+    /// address_txs_chain.
+    pub address_txs_chain: Option<String>,
+    /// address_txs_mempool.
+    pub address_txs_mempool: Option<String>,
+    /// address_utxos.
+    pub address_utxos: Option<String>,
+
     /// block.
     pub block: Option<String>,
 
@@ -74,7 +103,7 @@ impl Args {
 
         //OPTFLAG
         opts.optflag("h", "help", "prints help information");
-        opts.optflag("v", "version", "prints version information");
+        opts.optflag("v", "vv", "prints version information");
         opts.optflag("V", "server-version", "retrieves the server version");
         opts.optflag("l", "list", "lists files on the server");
         opts.optflag("d", "delete", "delete files from server");
@@ -82,9 +111,21 @@ impl Args {
         opts.optflag("p", "pretty", "prettifies the output");
 
         //mempool api intercepts
-        opts.optopt("", "block", "block api call", "BLOCK");
+        // VERSION
+        // premeptive support v1,v2 etc...
+        // opts.optopt("", "version", "api call version path (v1/...)", "VERSION");
+        // GENERAL
+        opts.optflag("", "difficulty_adjustment", "difficulty_adjustment api call");
+        opts.optopt("", "prices", "prices api call", "PRICES");
+        opts.optopt("", "timestamp", "timestamp api call", "TIMESTAMP");
+        opts.optopt("", "currency", "currency api call", "CURRENCY");
+
+        // ADDRESSES
         opts.optopt("", "address", "address api call", "ADDRESS");
         opts.optopt("", "address_txs", "address_txs api call", "ADDRESS_TXS");
+        opts.optopt("", "address_utxos", "address_utxos api call", "ADDRESS_UTXOS");
+
+        opts.optopt("", "block", "block api call", "BLOCK");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -105,6 +146,14 @@ impl Args {
         };
 
         //mempool api intercepts
+        // VERSION
+        // GENERAL
+        if matches.opt_present("difficulty_adjustment") {
+            generic_sys_call("difficulty_adjustment", &"v9999");
+            std::process::exit(0);
+        }
+
+        // ADDRESSES
         if matches.opt_present("address") {
             let address = matches.opt_str("address");
             //print!("86:address={}", address.unwrap());
@@ -160,9 +209,23 @@ impl Args {
                 .or_else(|| matches.opt_str("c"))
                 .map(PathBuf::from),
 
-            //mempool api intercepts
+            // mempool api intercepts
+            // mempool api version
+            // version: matches.opt_str("version"),
+
+            // GENERAL
+            difficulty_adjustment: matches.opt_str("difficulty_adjustment"),
+            currency: matches.opt_str("currency"),
+            prices: matches.opt_str("prices"),
+            timestamp: matches.opt_str("timestamp"),
+            historical_price: matches.opt_str("historical_price"),
+
+            // ADDRESSES
             address: matches.opt_str("address"),
             address_txs: matches.opt_str("address_txs"),
+            address_txs_chain: matches.opt_str("address_txs_chain"),
+            address_txs_mempool: matches.opt_str("address_txs_mempool"),
+            address_utxos: matches.opt_str("address_utxos"),
             block: matches.opt_str("block"),
 
             server: matches.opt_str("s"),
