@@ -117,10 +117,7 @@ impl IcmpTarget {
     /// # Notes
     /// For more convenience use the implementations of trait "From" and "FromStr".
     pub fn new(fqhn: Fqhn, resolve_policy: ResolvePolicy) -> Self {
-        IcmpTarget {
-            fqhn,
-            resolve_policy,
-        }
+        IcmpTarget { fqhn, resolve_policy }
     }
 
     /// Set a new [ResolvePolicy] for name resolution.

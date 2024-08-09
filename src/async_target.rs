@@ -85,9 +85,7 @@ pub struct AsyncTargetExecutor {
 impl AsyncTargetExecutor {
     /// Construct a new [AsyncTargetExecutor]
     pub fn new() -> Self {
-        AsyncTargetExecutor {
-            worker: None,
-        }
+        AsyncTargetExecutor { worker: None }
     }
 
     /// Start periodic availability checks for all given targets

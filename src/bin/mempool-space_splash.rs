@@ -1,22 +1,21 @@
-use std::{io::stdout, thread::sleep, time::Duration};
+use std::io::stdout;
+use std::thread::sleep;
+use std::time::Duration;
 
 use anyhow::Result;
-use crossterm::{
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-    ExecutableCommand,
-};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen};
+use crossterm::ExecutableCommand;
 use ratatui::prelude::*;
 use ratatui_splash_screen::{SplashConfig, SplashScreen};
-
 
 static SPLASH_CONFIG: SplashConfig = SplashConfig {
     image_data: include_bytes!("../../assets/splash.png"),
     sha256sum: Some("abc7e993ae85580df6a1349e89aa57d7d39cecdfe3cd5cc95f65b730aafab2cb"),
-    render_steps: 12,
+    render_steps: 3,
     use_colors: false,
 };
 
-fn main() -> Result<()> {
+fn splash() -> Result<()> {
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
     let backend = CrosstermBackend::new(stdout());
@@ -37,4 +36,7 @@ fn main() -> Result<()> {
     stdout().execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
     Ok(())
+}
+fn main() -> Result<()> {
+    splash()
 }

@@ -8,7 +8,7 @@ fn main() {
         if args.len() > 1 {
             block = &args[1];
         } else {
-            //silence is golden
+            // silence is golden
             std::process::exit(0);
         }
         let _res = blocking(&format!("/block/{}/header", &block));
