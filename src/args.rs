@@ -4,10 +4,33 @@ use std::io::IsTerminal;
 use std::path::PathBuf;
 use std::process;
 
+pub fn generic_sys_call(option: &str, sub_string: &str) {
+    //print!("option={}\n", option);
+    //print!("sub_string={}\n",sub_string);
+    //print!("{}",format!("mempool-space_{}", option));
+    use std::process::Command;
+    let output = if cfg!(target_os = "windows") {
+        Command::new(format!("mempool-space_{}", option))
+            .args(["/C", sub_string])
+            .output()
+            .expect("failed to execute process")
+    } else {
+        Command::new(format!("mempool-space_{}", option))
+            .arg(sub_string)
+            //.arg("echo hello")
+            .output()
+            .expect("failed to execute process")
+    };
+
+    let result = String::from_utf8(output.stdout)
+        .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+        .unwrap();
+    print!("{}", result);
+}
+
 /// Command-line arguments to parse.
 #[derive(Debug, Default)]
 pub struct Args {
-
     //mempool api intercepts
     /// address.
     pub address: Option<String>,
@@ -58,11 +81,10 @@ impl Args {
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
 
-
         //mempool api intercepts
         opts.optopt("", "block", "block api call", "BLOCK");
         opts.optopt("", "address", "address api call", "ADDRESS");
-        opts.optopt("", "address_txs", "address-txs api call", "ADDRESS_TXS");
+        opts.optopt("", "address_txs", "address_txs api call", "ADDRESS_TXS");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -83,11 +105,20 @@ impl Args {
         };
 
         //mempool api intercepts
-        if matches.opt_present("address") { print!("86:address"); std::process::exit(0);}
-        if matches.opt_present("address_txs") { print!("86:address-txs"); std::process::exit(0);}
-        if matches.opt_present("block") { print!("69:block"); std::process::exit(0);}
-
-
+        if matches.opt_present("address") {
+            let address = matches.opt_str("address");
+            //print!("86:address={}", address.unwrap());
+            generic_sys_call("address", &address.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("address_txs") {
+            print!("86:address-txs");
+            std::process::exit(0);
+        }
+        if matches.opt_present("block") {
+            print!("69:block");
+            std::process::exit(0);
+        }
 
         if matches.opt_present("h")
             || (matches.free.is_empty()
