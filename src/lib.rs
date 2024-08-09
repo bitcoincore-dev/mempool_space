@@ -76,7 +76,7 @@ use crossterm::style::Stylize;
 /// Default name of the configuration file.
 const CONFIG_FILE: &str = "config.toml";
 
-/// Runs `rpaste`.
+/// Runs `mempool-space`.
 pub fn run(args: Args) -> Result<()> {
     let mut config = Config::default();
     if let Some(ref config_path) = args.config {

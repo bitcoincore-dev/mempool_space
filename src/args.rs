@@ -83,7 +83,7 @@ impl Args {
                 env!("CARGO_PKG_DESCRIPTION"),
                 env!("CARGO_PKG_AUTHORS"),
                 env!("CARGO_PKG_REPOSITORY"),
-                "rpaste",
+                "mempool-space",
             );
             println!("{}", opts.usage(&usage));
             process::exit(0)
