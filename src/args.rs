@@ -9,6 +9,10 @@ use std::process;
 pub struct Args {
 
     //mempool api intercepts
+    /// address.
+    pub address: Option<String>,
+    /// address_txs.
+    pub address_txs: Option<String>,
     /// block.
     pub block: Option<String>,
 
@@ -56,7 +60,9 @@ impl Args {
 
 
         //mempool api intercepts
-        opts.optopt("b", "block", "block api call", "BLOCK");
+        opts.optopt("", "block", "block api call", "BLOCK");
+        opts.optopt("", "address", "address api call", "ADDRESS");
+        opts.optopt("", "address_txs", "address-txs api call", "ADDRESS_TXS");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -77,6 +83,8 @@ impl Args {
         };
 
         //mempool api intercepts
+        if matches.opt_present("address") { print!("86:address"); std::process::exit(0);}
+        if matches.opt_present("address_txs") { print!("86:address-txs"); std::process::exit(0);}
         if matches.opt_present("block") { print!("69:block"); std::process::exit(0);}
 
 
@@ -117,7 +125,12 @@ impl Args {
                 .ok()
                 .or_else(|| matches.opt_str("c"))
                 .map(PathBuf::from),
-            block: matches.opt_str("b"),
+
+            //mempool api intercepts
+            address: matches.opt_str("address"),
+            address_txs: matches.opt_str("address_txs"),
+            block: matches.opt_str("block"),
+
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
             url: matches.opt_str("u"),
