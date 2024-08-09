@@ -40,7 +40,7 @@ pub struct Args {
     // VERSION
     // pub version: Option<String>,
     // GENERAL
-    /// difficulty_adjustment
+    /// v1/difficulty_adjustment
     pub difficulty_adjustment: Option<String>,
     /// v1/prices
     pub prices: Option<String>,
@@ -116,7 +116,7 @@ impl Args {
         // opts.optopt("", "version", "api call version path (v1/...)", "VERSION");
         // GENERAL
         opts.optflag("", "difficulty_adjustment", "difficulty_adjustment api call");
-        opts.optopt("", "prices", "prices api call", "PRICES");
+        opts.optflag("", "prices", "prices api call");
         opts.optopt("", "timestamp", "timestamp api call", "TIMESTAMP");
         opts.optopt("", "currency", "currency api call", "CURRENCY");
 
@@ -150,6 +150,10 @@ impl Args {
         // GENERAL
         if matches.opt_present("difficulty_adjustment") {
             generic_sys_call("difficulty_adjustment", &"v9999");
+            std::process::exit(0);
+        }
+        if matches.opt_present("prices") {
+            generic_sys_call("prices", &"v9999");
             std::process::exit(0);
         }
 
