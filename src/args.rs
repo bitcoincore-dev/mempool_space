@@ -7,6 +7,11 @@ use std::process;
 /// Command-line arguments to parse.
 #[derive(Debug, Default)]
 pub struct Args {
+
+    //mempool api intercepts
+    /// block.
+    pub block: Option<String>,
+
     /// Configuration file.
     pub config: Option<PathBuf>,
     /// Server address.
@@ -39,6 +44,8 @@ impl Args {
     /// Parses the command-line arguments.
     pub fn parse() -> Self {
         let mut opts = Options::new();
+
+        //OPTFLAG
         opts.optflag("h", "help", "prints help information");
         opts.optflag("v", "version", "prints version information");
         opts.optflag("V", "server-version", "retrieves the server version");
@@ -46,6 +53,12 @@ impl Args {
         opts.optflag("d", "delete", "delete files from server");
         opts.optflag("o", "oneshot", "generates one shot links");
         opts.optflag("p", "pretty", "prettifies the output");
+
+
+        //mempool api intercepts
+        opts.optopt("b", "block", "block api call", "BLOCK");
+
+        //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
         opts.optopt("s", "server", "sets the address of the rustypaste server", "SERVER");
         opts.optopt("a", "auth", "sets the authentication or delete token", "TOKEN");
@@ -62,6 +75,11 @@ impl Args {
                 process::exit(1);
             }
         };
+
+        //mempool api intercepts
+        if matches.opt_present("block") { print!("69:block"); std::process::exit(0);}
+
+
 
         if matches.opt_present("h")
             || (matches.free.is_empty()
@@ -99,6 +117,7 @@ impl Args {
                 .ok()
                 .or_else(|| matches.opt_str("c"))
                 .map(PathBuf::from),
+            block: matches.opt_str("b"),
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
             url: matches.opt_str("u"),
