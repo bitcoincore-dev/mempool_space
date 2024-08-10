@@ -34,7 +34,8 @@ pub fn generic_sys_call(option: &str, sub_string: &str) {
     }
 }
 
-fn historical_prices(currency: &str, timestamp: &str) {
+/// https://mempool.space/docs/api/rest#get-historical-price
+pub fn historical_price(currency: &str, timestamp: &str) {
     //REF: mempool-space --historical_price --currency EUR --timestamp 150000000
     //EXPECT: {"prices":[{"time":1279497600,"EUR":0,"USD":0}],"exchangeRates":{"USDEUR":0.92,"USDGBP":0.78,"USDCAD":1.38,"USDCHF":0.87,"USDAUD":1.52,"USDJPY":146.79}}
     let _res = blocking(&format!(
@@ -182,12 +183,12 @@ impl Args {
                 if matches.opt_present("timestamp") {
                     //print!("timestamp={}\n", matches.opt_present("timestamp"));
                     let timestamp = matches.opt_str("timestamp");
-                    historical_prices(&currency.as_ref().unwrap(), &timestamp.unwrap());
+                    historical_price(&currency.as_ref().unwrap(), &timestamp.unwrap());
                 } else {
-                    historical_prices(&currency.unwrap(), "");
+                    historical_price(&currency.unwrap(), "");
                 }
             } else {
-                historical_prices("", "");
+                historical_price("", "");
             }
 
             //historical_prices(&"USD", &"1500000000");

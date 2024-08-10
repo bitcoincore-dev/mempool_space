@@ -62,7 +62,7 @@ pub mod this_error;
 /// Upload handler.
 pub mod upload;
 
-use crate::args::Args;
+use crate::args::{generic_sys_call, historical_price, Args};
 use crate::config::Config;
 use crate::this_error::{Error, Result};
 use crate::upload::Uploader;
@@ -158,4 +158,54 @@ pub fn run(args: Args) -> Result<()> {
     }
 
     Ok(())
+}
+
+pub fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+// This is a really bad adding function, its purpose is to fail in this
+// example.
+#[allow(dead_code)]
+fn bad_add(a: i32, b: i32) -> i32 {
+    a - b
+}
+
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+
+    #[test]
+    fn test_blockheight() {
+        let blockheight = blockheight::blockheight();
+        assert_ne!(0 as f64, blockheight.unwrap());
+    }
+    #[test]
+    fn test_historical_price() {
+        //! cargo test -- --nocapture
+        let historical_price_json = historical_price(&"EUR", &"1500000000");
+        print!("\n{{\"prices\":[{{\"time\":1499904000,\"EUR\":1964,\"USD\":2254.9}}],\"exchangeRates\":{{\"USDEUR\":0.92,\"USDGBP\":0.78,\"USDCAD\":1.38,\"USDCHF\":0.87,\"USDAUD\":1.53,\"USDJPY\":146.62}}}}\n");
+    }
+    #[test]
+    fn test_add() {
+        assert_eq!(add(1, 2), 3);
+    }
+
+    #[test]
+    fn test_bad_add() {
+        // This assert would fire and test will fail.
+        // Please note, that private functions can be tested too!
+        assert_ne!(bad_add(1, 2), 3);
+    }
+
+    use std::panic::{catch_unwind, AssertUnwindSafe};
+    #[test]
+    fn should_panic() {
+        let msg = catch_unwind(AssertUnwindSafe(|| {
+            panic!(" foo panic message");
+        }));
+
+        assert_ne!("foo panic message", *msg.unwrap_err().downcast_ref::<&str>().unwrap());
+    }
 }

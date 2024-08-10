@@ -48,7 +48,7 @@ cargo-t:cargo-test
 cargo-test:### 	cargo-test
 	@. $(HOME)/.cargo/env
 	#@cargo test
-	@cargo test
+	@cargo test -- --nocapture
 cargo-test-ignored:### 	cargo-test-ignored
 	@. $(HOME)/.cargo/env
 	#@cargo test -- --ignored
