@@ -4,6 +4,8 @@ use std::io::IsTerminal;
 use std::path::PathBuf;
 use std::process;
 
+use crate::blocking;
+
 pub fn generic_sys_call(option: &str, sub_string: &str) {
     use std::process::Command;
 
@@ -30,6 +32,21 @@ pub fn generic_sys_call(option: &str, sub_string: &str) {
             .unwrap();
         print!("{}", result);
     }
+}
+
+fn historical_prices(currency: &str, timestamp: &str) {
+    //REF: mempool-space --historical_price --currency EUR --timestamp 150000000
+    //EXPECT: {"prices":[{"time":1279497600,"EUR":0,"USD":0}],"exchangeRates":{"USDEUR":0.92,"USDGBP":0.78,"USDCAD":1.38,"USDCHF":0.87,"USDAUD":1.52,"USDJPY":146.79}}
+    let _res = blocking(&format!(
+        "v1/historical-price?currency={}&timestamp={}",
+        &format!("{:}", &currency),
+        &format!("{:}", &timestamp)
+    ));
+    // let _res = blocking(&format!(
+    //     "v1/historical-price?currency={}&timestamp={}",
+    //     &format!("{:}", "EUR"),
+    //     &format!("{:}", "1500000000")
+    // ));
 }
 
 /// Command-line arguments to parse.
@@ -117,6 +134,7 @@ impl Args {
         // GENERAL
         opts.optflag("", "difficulty_adjustment", "difficulty_adjustment api call");
         opts.optflag("", "prices", "prices api call");
+        opts.optflag("", "historical_price", "historical_price api call");
         opts.optopt("", "timestamp", "timestamp api call", "TIMESTAMP");
         opts.optopt("", "currency", "currency api call", "CURRENCY");
 
@@ -154,6 +172,26 @@ impl Args {
         }
         if matches.opt_present("prices") {
             generic_sys_call("prices", &"v9999");
+            std::process::exit(0);
+        }
+        if matches.opt_present("historical_price") {
+            if matches.opt_present("currency") {
+                //print!("currency={}\n", matches.opt_present("currency"));
+                let currency = matches.opt_str("currency");
+                //print!("currency={}", currency.clone().unwrap());
+                if matches.opt_present("timestamp") {
+                    //print!("timestamp={}\n", matches.opt_present("timestamp"));
+                    let timestamp = matches.opt_str("timestamp");
+                    historical_prices(&currency.as_ref().unwrap(), &timestamp.unwrap());
+                } else {
+                    historical_prices(&currency.unwrap(), "");
+                }
+            } else {
+                historical_prices("", "");
+            }
+
+            //historical_prices(&"USD", &"1500000000");
+            //historical_prices(&"EUR", &"1500000000");
             std::process::exit(0);
         }
 
