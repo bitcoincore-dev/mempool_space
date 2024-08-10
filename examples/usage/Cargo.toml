@@ -7,5 +7,11 @@ license = "MPL-2.0"
 description = "Example: usage of mempool_space"
 homepage = "https://github.com/randymcmillan/mempool_space"
 
+[package.metadata.wix]
+upgrade-guid = "1BD99A61-A700-45E6-BF4C-36C4DB60DE59"
+path-guid = "3B883E7C-6F3C-4B6E-9A0A-EB9A64DA58EF"
+license = false
+eula = false
+
 [dependencies]
 mempool_space = {path = "../.."}

@@ -1,0 +1,885 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<!--
+  Copyright (C) 2017 Christopher R. Field.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+  The "cargo wix" subcommand provides a variety of predefined variables available
+  for customization of this template. The values for each variable are set at
+  installer creation time. The following variables are available:
+
+  TargetTriple      = The rustc target triple name.
+  TargetEnv         = The rustc target environment. This is typically either
+                      "msvc" or "gnu" depending on the toolchain downloaded and
+                      installed.
+  TargetVendor      = The rustc target vendor. This is typically "pc", but Rust
+                      does support other vendors, like "uwp".
+  CargoTargetBinDir = The complete path to the directory containing the
+                      binaries (exes) to include. The default would be
+                      "target\release\". If an explicit rustc target triple is
+                      used, i.e. cross-compiling, then the default path would
+                      be "target\<CARGO_TARGET>\<CARGO_PROFILE>",
+                      where "<CARGO_TARGET>" is replaced with the "CargoTarget"
+                      variable value and "<CARGO_PROFILE>" is replaced with the
+                      value from the "CargoProfile" variable. This can also
+                      be overridden manually with the "target-bin-dir" flag.
+  CargoTargetDir    = The path to the directory for the build artifacts, i.e.
+                      "target".
+  CargoProfile      = The cargo profile used to build the binaries
+                      (usually "debug" or "release").
+  Version           = The version for the installer. The default is the
+                      "Major.Minor.Fix" semantic versioning number of the Rust
+                      package.
+-->
+
+<!--
+  Please do not remove these pre-processor If-Else blocks. These are used with
+  the `cargo wix` subcommand to automatically determine the installation
+  destination for 32-bit versus 64-bit installers. Removal of these lines will
+  cause installation errors.
+-->
+<?if $(sys.BUILDARCH) = x64 or $(sys.BUILDARCH) = arm64 ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+    <Product
+        Id='*'
+        Name='mempool_space'
+        UpgradeCode='5D3A3DB4-15D1-47AF-BE84-D3A6F541BB8B'
+        Manufacturer='RandyMcMillan; Simon Brummer'
+        Language='1033'
+        Codepage='1252'
+        Version='$(var.Version)'>
+
+        <Package Id='*'
+            Keywords='Installer'
+            Description='mempool.space api interface.'
+            Manufacturer='RandyMcMillan; Simon Brummer'
+            InstallerVersion='450'
+            Languages='1033'
+            Compressed='yes'
+            InstallScope='perMachine'
+            SummaryCodepage='1252'
+            />
+
+        <MajorUpgrade
+            Schedule='afterInstallInitialize'
+            DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
+
+        <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
+        <Property Id='DiskPrompt' Value='mempool_space Installation'/>
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
+                <Directory Id='APPLICATIONFOLDER' Name='mempool_space'>
+                    
+                    <!--
+                      Enabling the license sidecar file in the installer is a four step process:
+
+                      1. Uncomment the `Component` tag and its contents.
+                      2. Change the value for the `Source` attribute in the `File` tag to a path
+                         to the file that should be included as the license sidecar file. The path
+                         can, and probably should be, relative to this file.
+                      3. Change the value for the `Name` attribute in the `File` tag to the
+                         desired name for the file when it is installed alongside the `bin` folder
+                         in the installation directory. This can be omitted if the desired name is
+                         the same as the file name.
+                      4. Uncomment the `ComponentRef` tag with the Id attribute value of "License"
+                         further down in this file.
+                    -->
+                    <!--
+                    <Component Id='License' Guid='*'>
+                        <File Id='LicenseFile' Name='ChangeMe' DiskId='1' Source='C:\Path\To\File' KeyPath='yes'/>
+                    </Component>
+                    -->
+
+                    <Directory Id='Bin' Name='bin'>
+                        <Component Id='Path' Guid='60912461-41F2-4FD0-BD2E-29E3D03F2AE9' KeyPath='yes'>
+                            <Environment
+                                Id='PATH'
+                                Name='PATH'
+                                Value='[Bin]'
+                                Permanent='no'
+                                Part='last'
+                                Action='set'
+                                System='yes'/>
+                        </Component>
+                        <Component Id='binary0' Guid='*'>
+                            <File
+                                Id='exe0'
+                                Name='mempool-space.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary1' Guid='*'>
+                            <File
+                                Id='exe1'
+                                Name='mempool-space_address.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_address.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary2' Guid='*'>
+                            <File
+                                Id='exe2'
+                                Name='mempool-space_address-txs.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_address-txs.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary3' Guid='*'>
+                            <File
+                                Id='exe3'
+                                Name='mempool-space_address_txs.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_address_txs.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary4' Guid='*'>
+                            <File
+                                Id='exe4'
+                                Name='mempool-space_address_txs_chain.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_address_txs_chain.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary5' Guid='*'>
+                            <File
+                                Id='exe5'
+                                Name='mempool-space_address_utxo.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_address_utxo.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary6' Guid='*'>
+                            <File
+                                Id='exe6'
+                                Name='mempool-space_block.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary7' Guid='*'>
+                            <File
+                                Id='exe7'
+                                Name='mempool-space_block_audit_score.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_audit_score.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary8' Guid='*'>
+                            <File
+                                Id='exe8'
+                                Name='mempool-space_block_audit_scores.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_audit_scores.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary9' Guid='*'>
+                            <File
+                                Id='exe9'
+                                Name='mempool-space_block_audit_summary.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_audit_summary.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary10' Guid='*'>
+                            <File
+                                Id='exe10'
+                                Name='mempool-space_block_feerates.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_feerates.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary11' Guid='*'>
+                            <File
+                                Id='exe11'
+                                Name='mempool-space_block_header.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_header.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary12' Guid='*'>
+                            <File
+                                Id='exe12'
+                                Name='mempool-space_block_height.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_height.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary13' Guid='*'>
+                            <File
+                                Id='exe13'
+                                Name='mempool-space_block_predictions.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_predictions.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary14' Guid='*'>
+                            <File
+                                Id='exe14'
+                                Name='mempool-space_block_raw.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_raw.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary15' Guid='*'>
+                            <File
+                                Id='exe15'
+                                Name='mempool-space_block_rewards.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_rewards.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary16' Guid='*'>
+                            <File
+                                Id='exe16'
+                                Name='mempool-space_block_sizes_and_weights.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_sizes_and_weights.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary17' Guid='*'>
+                            <File
+                                Id='exe17'
+                                Name='mempool-space_block_status.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_status.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary18' Guid='*'>
+                            <File
+                                Id='exe18'
+                                Name='mempool-space_block_timestamp.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_block_timestamp.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary19' Guid='*'>
+                            <File
+                                Id='exe19'
+                                Name='mempool-space_blockheight.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_blockheight.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary20' Guid='*'>
+                            <File
+                                Id='exe20'
+                                Name='mempool-space_blocks.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_blocks.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary21' Guid='*'>
+                            <File
+                                Id='exe21'
+                                Name='mempool-space_blocks_height.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_blocks_height.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary22' Guid='*'>
+                            <File
+                                Id='exe22'
+                                Name='mempool-space_blocks_tip.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_blocks_tip.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary23' Guid='*'>
+                            <File
+                                Id='exe23'
+                                Name='mempool-space_blocks_tip_hash.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_blocks_tip_hash.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary24' Guid='*'>
+                            <File
+                                Id='exe24'
+                                Name='mempool-space_blocks_tip_height.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_blocks_tip_height.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary25' Guid='*'>
+                            <File
+                                Id='exe25'
+                                Name='mempool-space_children_pay_for_parent.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_children_pay_for_parent.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary26' Guid='*'>
+                            <File
+                                Id='exe26'
+                                Name='mempool-space_difficulty_adjustment.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_difficulty_adjustment.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary27' Guid='*'>
+                            <File
+                                Id='exe27'
+                                Name='mempool-space_difficulty_adjustments.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_difficulty_adjustments.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary28' Guid='*'>
+                            <File
+                                Id='exe28'
+                                Name='mempool-space_hashrate.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_hashrate.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary29' Guid='*'>
+                            <File
+                                Id='exe29'
+                                Name='mempool-space_historical_price.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_historical_price.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary30' Guid='*'>
+                            <File
+                                Id='exe30'
+                                Name='mempool-space_lighting_channel.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_channel.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary31' Guid='*'>
+                            <File
+                                Id='exe31'
+                                Name='mempool-space_lighting_channel_geodata.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_channel_geodata.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary32' Guid='*'>
+                            <File
+                                Id='exe32'
+                                Name='mempool-space_lighting_channel_geodata_for_node.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_channel_geodata_for_node.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary33' Guid='*'>
+                            <File
+                                Id='exe33'
+                                Name='mempool-space_lighting_channels_from_node_pubkey.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_channels_from_node_pubkey.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary34' Guid='*'>
+                            <File
+                                Id='exe34'
+                                Name='mempool-space_lighting_channels_from_txid.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_channels_from_txid.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary35' Guid='*'>
+                            <File
+                                Id='exe35'
+                                Name='mempool-space_lighting_isp_nodes.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_isp_nodes.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary36' Guid='*'>
+                            <File
+                                Id='exe36'
+                                Name='mempool-space_lighting_network_status.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_network_status.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary37' Guid='*'>
+                            <File
+                                Id='exe37'
+                                Name='mempool-space_lighting_node_stats.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_node_stats.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary38' Guid='*'>
+                            <File
+                                Id='exe38'
+                                Name='mempool-space_lighting_node_stats_per_country.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_node_stats_per_country.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary39' Guid='*'>
+                            <File
+                                Id='exe39'
+                                Name='mempool-space_lighting_nodes_channels.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_nodes_channels.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary40' Guid='*'>
+                            <File
+                                Id='exe40'
+                                Name='mempool-space_lighting_nodes_in_country.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_nodes_in_country.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary41' Guid='*'>
+                            <File
+                                Id='exe41'
+                                Name='mempool-space_lighting_nodes_stats_per_isp.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_nodes_stats_per_isp.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary42' Guid='*'>
+                            <File
+                                Id='exe42'
+                                Name='mempool-space_lighting_top_nodes.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_top_nodes.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary43' Guid='*'>
+                            <File
+                                Id='exe43'
+                                Name='mempool-space_lighting_top_nodes_by_connectivity.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_top_nodes_by_connectivity.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary44' Guid='*'>
+                            <File
+                                Id='exe44'
+                                Name='mempool-space_lighting_top_nodes_by_liquidity.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_top_nodes_by_liquidity.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary45' Guid='*'>
+                            <File
+                                Id='exe45'
+                                Name='mempool-space_lighting_top_oldests_nodes.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_lighting_top_oldests_nodes.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary46' Guid='*'>
+                            <File
+                                Id='exe46'
+                                Name='mempool-space_mempool.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mempool.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary47' Guid='*'>
+                            <File
+                                Id='exe47'
+                                Name='mempool-space_mempool_blocks_fees.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mempool_blocks_fees.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary48' Guid='*'>
+                            <File
+                                Id='exe48'
+                                Name='mempool-space_mempool_full_rbf_transactions.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mempool_full_rbf_transactions.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary49' Guid='*'>
+                            <File
+                                Id='exe49'
+                                Name='mempool-space_mempool_rbf_transactions.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mempool_rbf_transactions.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary50' Guid='*'>
+                            <File
+                                Id='exe50'
+                                Name='mempool-space_mempool_recent.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mempool_recent.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary51' Guid='*'>
+                            <File
+                                Id='exe51'
+                                Name='mempool-space_mining_blocks_timestamp.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mining_blocks_timestamp.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary52' Guid='*'>
+                            <File
+                                Id='exe52'
+                                Name='mempool-space_mining_pool.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mining_pool.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary53' Guid='*'>
+                            <File
+                                Id='exe53'
+                                Name='mempool-space_mining_pool_blocks.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mining_pool_blocks.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary54' Guid='*'>
+                            <File
+                                Id='exe54'
+                                Name='mempool-space_mining_pool_hashrate.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mining_pool_hashrate.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary55' Guid='*'>
+                            <File
+                                Id='exe55'
+                                Name='mempool-space_mining_pool_hashrates.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mining_pool_hashrates.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary56' Guid='*'>
+                            <File
+                                Id='exe56'
+                                Name='mempool-space_mining_pools.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_mining_pools.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary57' Guid='*'>
+                            <File
+                                Id='exe57'
+                                Name='mempool-space_post_transaction.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_post_transaction.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary58' Guid='*'>
+                            <File
+                                Id='exe58'
+                                Name='mempool-space_prices.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_prices.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary59' Guid='*'>
+                            <File
+                                Id='exe59'
+                                Name='mempool-space_reachable.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_reachable.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary60' Guid='*'>
+                            <File
+                                Id='exe60'
+                                Name='mempool-space_recomended_fees.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_recomended_fees.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary61' Guid='*'>
+                            <File
+                                Id='exe61'
+                                Name='mempool-space_reward_stats.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_reward_stats.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary62' Guid='*'>
+                            <File
+                                Id='exe62'
+                                Name='mempool-space_splash.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_splash.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary63' Guid='*'>
+                            <File
+                                Id='exe63'
+                                Name='mempool-space_transaction.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary64' Guid='*'>
+                            <File
+                                Id='exe64'
+                                Name='mempool-space_transaction_hex.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_hex.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary65' Guid='*'>
+                            <File
+                                Id='exe65'
+                                Name='mempool-space_transaction_merkle_block_proof.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_merkle_block_proof.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary66' Guid='*'>
+                            <File
+                                Id='exe66'
+                                Name='mempool-space_transaction_merkle_proof.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_merkle_proof.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary67' Guid='*'>
+                            <File
+                                Id='exe67'
+                                Name='mempool-space_transaction_outspend.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_outspend.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary68' Guid='*'>
+                            <File
+                                Id='exe68'
+                                Name='mempool-space_transaction_outspends.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_outspends.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary69' Guid='*'>
+                            <File
+                                Id='exe69'
+                                Name='mempool-space_transaction_raw.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_raw.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary70' Guid='*'>
+                            <File
+                                Id='exe70'
+                                Name='mempool-space_transaction_rbf_timeline.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_rbf_timeline.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary71' Guid='*'>
+                            <File
+                                Id='exe71'
+                                Name='mempool-space_transaction_status.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_status.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary72' Guid='*'>
+                            <File
+                                Id='exe72'
+                                Name='mempool-space_transaction_times.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_transaction_times.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                        <Component Id='binary73' Guid='*'>
+                            <File
+                                Id='exe73'
+                                Name='mempool-space_validate_address.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\mempool-space_validate_address.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <Feature
+            Id='Binaries'
+            Title='Application'
+            Description='Installs all binaries and the license.'
+            Level='1'
+            ConfigurableDirectory='APPLICATIONFOLDER'
+            AllowAdvertise='no'
+            Display='expand'
+            Absent='disallow'>
+            
+            <!--
+              Uncomment the following `ComponentRef` tag to add the license
+              sidecar file to the installer.
+            -->
+            <!--<ComponentRef Id='License'/>-->
+
+            <ComponentRef Id='binary0'/>
+            <ComponentRef Id='binary1'/>
+            <ComponentRef Id='binary2'/>
+            <ComponentRef Id='binary3'/>
+            <ComponentRef Id='binary4'/>
+            <ComponentRef Id='binary5'/>
+            <ComponentRef Id='binary6'/>
+            <ComponentRef Id='binary7'/>
+            <ComponentRef Id='binary8'/>
+            <ComponentRef Id='binary9'/>
+            <ComponentRef Id='binary10'/>
+            <ComponentRef Id='binary11'/>
+            <ComponentRef Id='binary12'/>
+            <ComponentRef Id='binary13'/>
+            <ComponentRef Id='binary14'/>
+            <ComponentRef Id='binary15'/>
+            <ComponentRef Id='binary16'/>
+            <ComponentRef Id='binary17'/>
+            <ComponentRef Id='binary18'/>
+            <ComponentRef Id='binary19'/>
+            <ComponentRef Id='binary20'/>
+            <ComponentRef Id='binary21'/>
+            <ComponentRef Id='binary22'/>
+            <ComponentRef Id='binary23'/>
+            <ComponentRef Id='binary24'/>
+            <ComponentRef Id='binary25'/>
+            <ComponentRef Id='binary26'/>
+            <ComponentRef Id='binary27'/>
+            <ComponentRef Id='binary28'/>
+            <ComponentRef Id='binary29'/>
+            <ComponentRef Id='binary30'/>
+            <ComponentRef Id='binary31'/>
+            <ComponentRef Id='binary32'/>
+            <ComponentRef Id='binary33'/>
+            <ComponentRef Id='binary34'/>
+            <ComponentRef Id='binary35'/>
+            <ComponentRef Id='binary36'/>
+            <ComponentRef Id='binary37'/>
+            <ComponentRef Id='binary38'/>
+            <ComponentRef Id='binary39'/>
+            <ComponentRef Id='binary40'/>
+            <ComponentRef Id='binary41'/>
+            <ComponentRef Id='binary42'/>
+            <ComponentRef Id='binary43'/>
+            <ComponentRef Id='binary44'/>
+            <ComponentRef Id='binary45'/>
+            <ComponentRef Id='binary46'/>
+            <ComponentRef Id='binary47'/>
+            <ComponentRef Id='binary48'/>
+            <ComponentRef Id='binary49'/>
+            <ComponentRef Id='binary50'/>
+            <ComponentRef Id='binary51'/>
+            <ComponentRef Id='binary52'/>
+            <ComponentRef Id='binary53'/>
+            <ComponentRef Id='binary54'/>
+            <ComponentRef Id='binary55'/>
+            <ComponentRef Id='binary56'/>
+            <ComponentRef Id='binary57'/>
+            <ComponentRef Id='binary58'/>
+            <ComponentRef Id='binary59'/>
+            <ComponentRef Id='binary60'/>
+            <ComponentRef Id='binary61'/>
+            <ComponentRef Id='binary62'/>
+            <ComponentRef Id='binary63'/>
+            <ComponentRef Id='binary64'/>
+            <ComponentRef Id='binary65'/>
+            <ComponentRef Id='binary66'/>
+            <ComponentRef Id='binary67'/>
+            <ComponentRef Id='binary68'/>
+            <ComponentRef Id='binary69'/>
+            <ComponentRef Id='binary70'/>
+            <ComponentRef Id='binary71'/>
+            <ComponentRef Id='binary72'/>
+            <ComponentRef Id='binary73'/>
+
+            <Feature
+                Id='Environment'
+                Title='PATH Environment Variable'
+                Description='Add the install location of the [ProductName] executable to the PATH system environment variable. This allows the [ProductName] executable to be called from any location.'
+                Level='1'
+                Absent='allow'>
+                <ComponentRef Id='Path'/>
+            </Feature>
+        </Feature>
+
+        <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
+
+        
+        <!--
+          Uncomment the following `Icon` and `Property` tags to change the product icon.
+
+          The product icon is the graphic that appears in the Add/Remove
+          Programs control panel for the application.
+        -->
+        <!--<Icon Id='ProductICO' SourceFile='wix\Product.ico'/>-->
+        <!--<Property Id='ARPPRODUCTICON' Value='ProductICO' />-->
+
+        <Property Id='ARPHELPLINK' Value='https://github.com/randymcmillan/mempool_space'/>
+        
+        <UI>
+            <UIRef Id='WixUI_FeatureTree'/>
+            
+            <!--
+              Enabling the EULA dialog in the installer is a three step process:
+
+                1. Comment out or remove the two `Publish` tags that follow the
+                   `WixVariable` tag.
+                2. Uncomment the `<WixVariable Id='WixUILicenseRtf' Value='Path\to\Eula.rft'>` tag further down
+                3. Replace the `Value` attribute of the `WixVariable` tag with
+                   the path to a RTF file that will be used as the EULA and
+                   displayed in the license agreement dialog.
+            -->
+            <Publish Dialog='WelcomeDlg' Control='Next' Event='NewDialog' Value='CustomizeDlg' Order='99'>1</Publish>
+            <Publish Dialog='CustomizeDlg' Control='Back' Event='NewDialog' Value='WelcomeDlg' Order='99'>1</Publish>
+
+        </UI>
+
+        
+        <!--
+          Enabling the EULA dialog in the installer requires uncommenting
+          the following `WixUILicenseRTF` tag and changing the `Value`
+          attribute.
+        -->
+        <!-- <WixVariable Id='WixUILicenseRtf' Value='Relative\Path\to\Eula.rtf'/> -->
+
+        
+        <!--
+          Uncomment the next `WixVariable` tag to customize the installer's
+          Graphical User Interface (GUI) and add a custom banner image across
+          the top of each screen. See the WiX Toolset documentation for details
+          about customization.
+
+          The banner BMP dimensions are 493 x 58 pixels.
+        -->
+        <!--<WixVariable Id='WixUIBannerBmp' Value='wix\Banner.bmp'/>-->
+
+        
+        <!--
+          Uncomment the next `WixVariable` tag to customize the installer's
+          Graphical User Interface (GUI) and add a custom image to the first
+          dialog, or screen. See the WiX Toolset documentation for details about
+          customization.
+
+          The dialog BMP dimensions are 493 x 312 pixels.
+        -->
+        <!--<WixVariable Id='WixUIDialogBmp' Value='wix\Dialog.bmp'/>-->
+
+    </Product>
+
+</Wix>

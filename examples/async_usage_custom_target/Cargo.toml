@@ -7,5 +7,11 @@ license = "MPL-2.0"
 description = "Example: async usage of mempool_space with custom target"
 homepage = "https://github.com/randymcmillan/mempool_space"
 
+[package.metadata.wix]
+upgrade-guid = "25C87D23-4525-497E-BD5D-82AE840C99F2"
+path-guid = "D6783261-D9DD-4424-A6CD-4FCB05BC1CFB"
+license = false
+eula = false
+
 [dependencies]
 mempool_space = {path = "../..", features = ["async"]}
