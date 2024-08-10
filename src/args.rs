@@ -34,7 +34,7 @@ pub fn generic_sys_call(option: &str, sub_string: &str) {
     }
 }
 
-/// https://mempool.space/docs/api/rest#get-historical-price
+/// <https://mempool.space/docs/api/rest#get-historical-price>
 pub fn historical_price(currency: &str, timestamp: &str) {
     //REF: mempool-space --historical_price --currency EUR --timestamp 150000000
     //EXPECT: {"prices":[{"time":1279497600,"EUR":0,"USD":0}],"exchangeRates":{"USDEUR":0.92,"USDGBP":0.78,"USDCAD":1.38,"USDCHF":0.87,"USDAUD":1.52,"USDJPY":146.79}}

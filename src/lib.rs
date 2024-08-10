@@ -1,26 +1,25 @@
+// Originally based on the reachable repo.
+//
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //
 // Author: Simon Brummer (simon.brummer@posteo.de)
 
-//! Reachable, check if a Target is currently available or not.
+//! mempool_space, a mempool.space API lib.
 //!
-//! A "Target" is everything that implements the Target trait, used to
-//! check if, a resource is currently available. This crate offers a ICMP and TCP based Target
-//! usable to check, if a computer is available over the network.
-//!
-//! Additionally this crate contains asynchronous utilities to execute these checks regularly
-//! within a given time interval.
+//! Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
+//! <https://github.com/RandyMcMillan/mempool_space.git>
 
 use std::io::Read;
 
-const VERSION: &str = "v1";
+//const API_VERSION: &str = "v1";
+//
 const URL: &str = "https://mempool.space/api";
 
 pub fn blocking(api: &String) -> Result<&str> {
     let call = format!("{}/{}", URL, api);
-    let mut body = ureq::get(&call).call().expect("REASON").into_reader();
+    let mut body = ureq::get(&call).call().expect("calls to blocking(api: &String) needs to include /v1/<api_endpoint> in some cases.").into_reader();
     let mut buf = Vec::new();
     body.read_to_end(&mut buf).unwrap();
     let text = match std::str::from_utf8(&buf) {
@@ -176,16 +175,19 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
-    #[test]
-    fn test_blockheight() {
-        let blockheight = blockheight::blockheight();
-        assert_ne!(0 as f64, blockheight.unwrap());
-    }
+    /// https://mempool.space/docs/api/rest
+    ///
+    /// General
     #[test]
     fn test_difficulty_adjustment(){
         let binding = format!("v1/difficulty-adjustment").clone();
         let difficulty_adjustment: &str = blocking(&binding).expect("REASON");
-        println!("");
+    }
+    #[test]
+    fn test_price(){
+        /// GET /api/v1/prices
+        let binding = format!("v1/prices").clone();
+        let prices: &str = blocking(&binding).expect("REASON");
     }
     #[test]
     fn test_historical_price() {
@@ -193,6 +195,24 @@ mod tests {
         let historical_price_json = historical_price(&"EUR", &"1500000000");
         print!("\n{{\"prices\":[{{\"time\":1499904000,\"EUR\":1964,\"USD\":2254.9}}],\"exchangeRates\":{{\"USDEUR\":0.92,\"USDGBP\":0.78,\"USDCAD\":1.38,\"USDCHF\":0.87,\"USDAUD\":1.53,\"USDJPY\":146.62}}}}\n");
     }
+
+
+    /// Addresses
+    /// Blocks
+    #[test]
+    fn test_blockheight() {
+        let blockheight = blockheight::blockheight();
+        assert_ne!(0 as f64, blockheight.unwrap());
+    }
+    /// Mining
+    /// Fees
+    /// Mempool
+    /// Transactions
+    /// Lightning
+    /// Accelerator (Public)
+    /// Accelerator (Authenticated)
+
+
     #[test]
     fn test_add() {
         assert_eq!(add(1, 2), 3);
