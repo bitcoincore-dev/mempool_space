@@ -182,6 +182,12 @@ mod tests {
         assert_ne!(0 as f64, blockheight.unwrap());
     }
     #[test]
+    fn test_difficulty_adjustment(){
+        let binding = format!("v1/difficulty-adjustment").clone();
+        let difficulty_adjustment: &str = blocking(&binding).expect("REASON");
+        println!("");
+    }
+    #[test]
     fn test_historical_price() {
         //! cargo test -- --nocapture
         let historical_price_json = historical_price(&"EUR", &"1500000000");
