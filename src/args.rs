@@ -74,30 +74,30 @@ pub struct Args {
 
     // VERSION
     // pub version: Option<String>,
-    /// `https://mempool.space/api/v1/difficulty-adjustment` GENERAL
+    /// `https://mempool.space/api/v1/difficulty-adjustment`
     pub difficulty_adjustment: Option<String>,
     /// `https://mempool.space/api/v1/prices`
     pub prices: Option<String>,
     /// `https://mempool.space/api/v1/historical-price`
-    /// ENDPOINT
-    /// GET /api/v1/historical-price?currency=EUR&timestamp=1500000000
-    /// default USD
-    pub currency: Option<String>,
-    /// default now
-    pub timestamp: Option<String>,
     pub historical_price: Option<String>,
+    /// `https://mempool.space/api/v1/historical-price?currency=USD`
+    pub currency: Option<String>,
+    /// `https://mempool.space/api/v1/historical-price?currency=USD?timestamp=0`
+    pub timestamp: Option<String>,
 
     // ADDRESSES
-    /// address.
+    /// `https://mempool.space/api/address/<ADDRESS>`
     pub address: Option<String>,
-    /// address_txs.
+    /// `https://mempool.space/api/address/<ADDRESS>/txs`
     pub address_txs: Option<String>,
-    /// address_txs_chain.
+    /// `https://mempool.space/api/address/<ADDRESS>/txs/chain`
     pub address_txs_chain: Option<String>,
-    /// address_txs_mempool.
+    /// `https://mempool.space/address/<ADDRESS>/txs/mempool`
     pub address_txs_mempool: Option<String>,
-    /// address_utxos.
+    /// `https://mempool.space/api/address/<ADDRESS>/utxo`
     pub address_utxos: Option<String>,
+    /// `https://mempool.space/api/validate-address/<ADDRESS>`
+    pub validate_address: Option<String>,
 
     /// block.
     pub block: Option<String>,
@@ -285,6 +285,8 @@ impl Args {
             address_txs_chain: matches.opt_str("address_txs_chain"),
             address_txs_mempool: matches.opt_str("address_txs_mempool"),
             address_utxos: matches.opt_str("address_utxos"),
+            validate_address: matches.opt_str("validate_address"),
+
             block: matches.opt_str("block"),
 
             server: matches.opt_str("s"),
