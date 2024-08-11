@@ -158,6 +158,7 @@ impl Args {
         opts.optopt("", "address", "address api call", "ADDRESS");
         opts.optopt("", "address_txs", "address_txs api call", "ADDRESS_TXS");
         opts.optopt("", "address_txs_chain", "address_txs_chain api call", "ADDRESS_TXS_CHAIN");
+        opts.optopt("", "address_txs_mempool", "address_txs_mempool api call", "ADDRESS_TXS_MEMPOOL");
         opts.optopt("", "address_utxos", "address_utxos api call", "ADDRESS_UTXOS");
         opts.optopt("", "validate_address", "validate an address", "VALIDATE_ADDRESS");
 
@@ -227,6 +228,11 @@ impl Args {
         if matches.opt_present("address_txs_chain") {
             let address = matches.opt_str("address_txs_chain");
             generic_sys_call("address_txs_chain", &address.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("address_txs_mempool") {
+            let address = matches.opt_str("address_txs_mempool");
+            generic_sys_call("address_txs_mempool", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("validate_address") {

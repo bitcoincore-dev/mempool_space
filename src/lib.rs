@@ -257,7 +257,8 @@ mod tests {
     fn test_address_txs_mempool() {
         // GET /api/address/:address/txs/mempool
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool").clone();
-        let prices: &str = blocking(&binding).expect("REASON");
+        let address_txs_mempool: &str = blocking(&binding).expect("REASON");
+        let address_txs_mempool = generic_sys_call("address_txs_mempool", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
