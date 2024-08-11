@@ -206,6 +206,7 @@ mod tests {
         // GET /api/v1/prices
         let binding = format!("v1/prices").clone();
         let prices: &str = blocking(&binding).expect("REASON");
+        let prices = generic_sys_call("prices", "extraneous_arg");
         wait();
     }
     #[test]
@@ -213,6 +214,7 @@ mod tests {
         // GET /api/v1/historical-price?currency=EUR&timestamp=1500000000
         let historical_price_json = historical_price(&"EUR", &"1500000000");
         print!("\n{{\"prices\":[{{\"time\":1499904000,\"EUR\":1964,\"USD\":2254.9}}],\"exchangeRates\":{{\"USDEUR\":0.92,\"USDGBP\":0.78,\"USDCAD\":1.38,\"USDCHF\":0.87,\"USDAUD\":1.53,\"USDJPY\":146.62}}}}\n");
+        let historical_prices = generic_sys_call("historical_price", "USD");
         wait();
     }
 
