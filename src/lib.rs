@@ -17,6 +17,7 @@ use std::io::Read;
 //
 const URL: &str = "https://mempool.space/api";
 
+///  `pub fn blocking(api: &String) -> Result<&str>`
 pub fn blocking(api: &String) -> Result<&str> {
     let call = format!("{}/{}", URL, api);
     let mut body = ureq::get(&call).call().expect("calls to blocking(api: &String) needs to include /v1/<api_endpoint> in some cases.").into_reader();
@@ -30,26 +31,33 @@ pub fn blocking(api: &String) -> Result<&str> {
     Ok(api)
 }
 
-// Modules
+/// `pub mod blockheight`
 pub mod blockheight;
+/// `pub mod error`
 pub mod error;
+/// `pub mod resolve_policy`
 pub mod resolve_policy;
+/// `pub mod target`
 pub mod target;
 
 #[cfg(feature = "async")]
+/// `pub mod async_target`
 pub mod async_target;
 
 // Re-exports
+/// `pub use error`
 pub use error::{CheckTargetError, ParseTargetError, ResolveTargetError};
+/// `pub use resolve_policy`
 pub use resolve_policy::ResolvePolicy;
+/// `pub use target`
 pub use target::{Fqhn, IcmpTarget, Port, Status, Target, TcpTarget};
 
 #[cfg(feature = "async")]
 pub use async_target::{AsyncTarget, AsyncTargetExecutor, BoxedHandler, BoxedTarget, OldStatus};
 
-// //! A CLI tool for [`rustypaste`].
+// //! A CLI tool for [`mempool_space`].
 // //!
-// //! [`rustypaste`]: https://github.com/orhun/rustypaste
+// //! [`mempool_space`]: https://github.com/randymcmillan/mempool_space
 // #![warn(missing_docs, clippy::unwrap_used)]
 
 /// Command-line argument parser.
@@ -75,14 +83,14 @@ use crossterm::style::Stylize;
 /// Default name of the configuration file.
 const CONFIG_FILE: &str = "config.toml";
 
-/// Runs `mempool-space`.
+///  `pub fn run(args: Args) -> Result<()>`
 pub fn run(args: Args) -> Result<()> {
     let mut config = Config::default();
     if let Some(ref config_path) = args.config {
         config = toml::from_str(&fs::read_to_string(config_path)?)?
     } else {
         for path in [
-            dirs_next::home_dir().map(|p| p.join(".rustypaste").join(CONFIG_FILE)),
+            dirs_next::home_dir().map(|p| p.join(".mempool").join(CONFIG_FILE)),
             dirs_next::config_dir().map(|p| p.join("rustypaste").join(CONFIG_FILE)),
         ]
         .iter()
@@ -159,39 +167,41 @@ pub fn run(args: Args) -> Result<()> {
     Ok(())
 }
 
-pub fn add(a: i32, b: i32) -> i32 {
-    a + b
-}
-
-// This is a really bad adding function, its purpose is to fail in this
-// example.
-#[allow(dead_code)]
-fn bad_add(a: i32, b: i32) -> i32 {
-    a - b
-}
+// pub fn add(a: i32, b: i32) -> i32 {
+//     a + b
+// }
+//
+// // This is a really bad adding function, its purpose is to fail in this
+// // example.
+// #[allow(dead_code)]
+// fn bad_add(a: i32, b: i32) -> i32 {
+//     a - b
+// }
 
 #[cfg(test)]
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
-    /// https://mempool.space/docs/api/rest
-    ///
     /// General
+    /// https://mempool.space/docs/api/rest
+    /// cargo test -- --nocapture
     #[test]
     fn test_difficulty_adjustment(){
+        // GET /api/v1/difficulty-adjustment
         let binding = format!("v1/difficulty-adjustment").clone();
         let difficulty_adjustment: &str = blocking(&binding).expect("REASON");
+        let difficulty_adjustment = generic_sys_call(&binding, "");
     }
     #[test]
     fn test_price(){
-        /// GET /api/v1/prices
+        // GET /api/v1/prices
         let binding = format!("v1/prices").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
     #[test]
     fn test_historical_price() {
-        //! cargo test -- --nocapture
+        // GET /api/v1/historical-price?currency=EUR&timestamp=1500000000
         let historical_price_json = historical_price(&"EUR", &"1500000000");
         print!("\n{{\"prices\":[{{\"time\":1499904000,\"EUR\":1964,\"USD\":2254.9}}],\"exchangeRates\":{{\"USDEUR\":0.92,\"USDGBP\":0.78,\"USDCAD\":1.38,\"USDCHF\":0.87,\"USDAUD\":1.53,\"USDJPY\":146.62}}}}\n");
     }
@@ -200,26 +210,32 @@ mod tests {
     /// Addresses
     #[test]
     fn test_address(){
-        /// GET /api/address/:address
+        // GET /api/address/:address
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
     #[test]
     fn test_address_txs(){
-        /// GET /api/address/:address/txs
+        // GET /api/address/:address/txs
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
     #[test]
     fn test_address_txs_chain(){
-        /// GET /api/address/:address/txs/chain
+        // GET /api/address/:address/txs/chain
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
     #[test]
     fn test_address_txs_mempool(){
-        /// GET /api/address/:address/txs/mempool
+        // GET /api/address/:address/txs/mempool
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool").clone();
+        let prices: &str = blocking(&binding).expect("REASON");
+    }
+    #[test]
+    fn test_address_txs_utxo(){
+        // GET /api/address/:address/utxo
+        let binding = format!("address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
 
