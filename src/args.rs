@@ -53,16 +53,15 @@ pub fn historical_price(currency: &str, timestamp: &str) {
 /// <https://mempool.space/docs/api/rest>
 /// - [API/REST](https://mempool.space/docs/api/rest)
 ///     - [GENERAL](https://mempool.space/docs/api/rest#get-difficulty-adjustment)
-///     - GENERAL <https://mempool.space/docs/api/rest#get-difficulty-adjustment>
-///     - ADDRESSES <https://mempool.space/docs/api/rest#get-address>
-///     - BLOCKS <https://mempool.space/docs/api/rest#get-block>
-///     - MINING <https://mempool.space/docs/api/rest#get-mining-pools>
-///     - FEES <https://mempool.space/docs/api/rest#get-mempool-blocks-fees>
-///     - MEMPOOL <https://mempool.space/docs/api/rest#get-mempool>
-///     - TRANSACTIONS <https://mempool.space/docs/api/rest#get-cpfp>
-///     - LIGHTNING <https://mempool.space/docs/api/rest#get-lightning-network-stats>
-///     - ACCELERATOR (Public) <https://mempool.space/docs/api/rest#accelerator-estimate>
-///     - ACCELERATOR (Authenticated) <https://mempool.space/docs/api/rest#accelerator-top-up-history>
+///     - [ADDRESSES](https://mempool.space/docs/api/rest#get-address)
+///     - [BLOCKS](https://mempool.space/docs/api/rest#get-block)
+///     - [MINING](https://mempool.space/docs/api/rest#get-mining-pools)
+///     - [FEES](https://mempool.space/docs/api/rest#get-mempool-blocks-fees)
+///     - [MEMPOOL](https://mempool.space/docs/api/rest#get-mempool)
+///     - [TRANSACTIONS](https://mempool.space/docs/api/rest#get-cpfp)
+///     - [LIGHTNING](https://mempool.space/docs/api/rest#get-lightning-network-stats)
+///     - [ACCELERATOR (Public)](https://mempool.space/docs/api/rest#accelerator-estimate)
+///     - [ACCELERATOR (Authenticated)](https://mempool.space/docs/api/rest#accelerator-top-up-history)
 ///
 ///         USAGE:
 ///       - mempool-space \--difficulty_adjustment (flagged)
