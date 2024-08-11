@@ -49,7 +49,7 @@ cargo-doc:### 	cargo-check
 	@. $(HOME)/.cargo/env
 	@cargo doc --no-deps --all-features
 cargo-t:cargo-test
-cargo-test:### 	cargo-test
+cargo-test:cargo-install### 	cargo-test
 	@. $(HOME)/.cargo/env
 	#@cargo test
 	@cargo test -- --nocapture
