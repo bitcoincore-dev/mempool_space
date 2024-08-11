@@ -34,3 +34,10 @@ $`mempool-space_address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv`
 - Flags follow the [mempool.space](https://mempool.space/docs/api/rest)/[api/rest](https://mempool.space/docs/api/rest) (replace dashes with underscores)
 
 - Flags invoke the executable with args
+
+
+## Shell Command Examples
+
+$`mempool-space --block $(mempool-space --block_height 856379)`
+
+$` mempool-space --block_header $(mempool-space --block_height 856379)`
