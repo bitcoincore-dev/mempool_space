@@ -265,18 +265,50 @@ mod tests {
     fn test_address_txs_utxo() {
         // GET /api/address/:address/utxo
         let binding = format!("address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo").clone();
-        let prices: &str = blocking(&binding).expect("REASON");
+        let address_utxo: &str = blocking(&binding).expect("existing valid address needed");
         wait("1");
     }
     #[test]
     fn test_validate_address() {
         // GET /api/v1/validate-address/:address
         let binding = format!("v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY").clone();
-        let prices: &str = blocking(&binding).expect("REASON");
+        let prices: &str = blocking(&binding).expect("valid address needed");
         wait("1");
     }
 
     /// Blocks
+    #[test]
+    fn test_block() {
+        // GET /api/block/:hash
+        let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce").clone();
+        let block: &str = blocking(&binding).expect("an existing block hash is needed");
+        let block = generic_sys_call(
+            "block",
+            "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce",
+        );
+        wait("1");
+    }
+    fn test_block_header() {
+        // GET /api/block/:hash/header
+        let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce").clone();
+        let block_header: &str = blocking(&binding).expect("an existing block hash is needed");
+        let block = generic_sys_call(
+            "block_header",
+            "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce",
+        );
+        wait("1");
+    }
+    fn test_block_height() {
+        // GET /api/block/:block-height/height
+        let binding = format!("block-height/615615").clone();
+        let block_height: &str = blocking(&binding).expect("an existing block hash is needed");
+        let block_height= generic_sys_call(
+            "block_height",
+            "615615",
+        );
+        wait("1");
+    }
+
     #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();

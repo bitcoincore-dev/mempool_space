@@ -98,8 +98,49 @@ pub struct Args {
     /// `https://mempool.space/api/validate-address/<ADDRESS>`
     pub validate_address: Option<String>,
 
-    /// block.
+    /// - BLOCK
+    /// `https://mempool.space/api/block/<BLOCK_HASH>`
     pub block: Option<String>,
+    /// `https://mempool.space/api/block/<BLOCK_HASH>/header`
+    pub block_header: Option<String>,
+
+    /// - BLOCK_HEIGHT
+    /// `https://mempool.space/api/block-height/<BLOCK_HEIGHT>`
+    pub block_height: Option<String>,
+
+    /// - V1 MINING BLOCKS TIMESTAMP <UTC_SECS>
+    /// `https://mempool.space/api/v1/mining/blocks/timestamp/<UTC_SECS>`
+    pub block_timestamp: Option<String>,
+
+    /// - BLOCK
+    /// `https://mempool.space/api/block/<BLOCK_HASH>/raw`
+    pub block_raw: Option<String>,
+    /// `https://mempool.space/api/block/<BLOCK_HASH>/status`
+    pub block_status: Option<String>,
+
+    /// - BLOCKS TIP HEIGHT
+    /// `https://mempool.space/api/blocks/tip/height`
+    pub blocks_tip_height: Option<String>,
+    /// - BLOCKS TIP HASH
+    /// `https://mempool.space/api/blocks/tip/hash`
+    pub blocks_tip_hash: Option<String>,
+
+    /// - BLOCK <BLOCK_HASH> <TXID> <INDEX>
+    /// `https://mempool.space/api/block/<TXID>/<INDEX>`
+    pub block_txid: Option<String>,
+    /// - BLOCK <BLOCK_HASH> <TXIDS>
+    /// `https://mempool.space/api/block/<TXID>`
+    pub block_txids: Option<String>,
+
+    /// - BLOCK <BLOCK_HASH> <TXS>
+    /// `https://mempool.space/api/block/<BLOCK_HASH>/txs`
+    pub block_txs: Option<String>,
+    /// - V1 BLOCKS <BLOCK_HEIGHT>
+    /// `https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>`
+    pub blocks: Option<String>,
+    /// - V1 BLOCKS_BULK <BLOCK_HEIGHT_START> <BLOCK_HEIGHT_STOP>
+    /// `https://mempool.space/api/v1/blocks-bulk/<BLOCK_HEIGHT_START>/<BLOCK_HEIGHT_STOP>`
+    pub blocks_bulk: Option<String>,
 
     /// Configuration file.
     pub config: Option<PathBuf>,
@@ -157,8 +198,18 @@ impl Args {
         // ADDRESSES
         opts.optopt("", "address", "address api call", "ADDRESS");
         opts.optopt("", "address_txs", "address_txs api call", "ADDRESS_TXS");
-        opts.optopt("", "address_txs_chain", "address_txs_chain api call", "ADDRESS_TXS_CHAIN");
-        opts.optopt("", "address_txs_mempool", "address_txs_mempool api call", "ADDRESS_TXS_MEMPOOL");
+        opts.optopt(
+            "",
+            "address_txs_chain",
+            "address_txs_chain api call",
+            "ADDRESS_TXS_CHAIN",
+        );
+        opts.optopt(
+            "",
+            "address_txs_mempool",
+            "address_txs_mempool api call",
+            "ADDRESS_TXS_MEMPOOL",
+        );
         opts.optopt("", "address_utxos", "address_utxos api call", "ADDRESS_UTXOS");
         opts.optopt("", "validate_address", "validate an address", "VALIDATE_ADDRESS");
 
@@ -302,7 +353,52 @@ impl Args {
             address_utxos: matches.opt_str("address_utxos"),
             validate_address: matches.opt_str("validate_address"),
 
+            // BLOCK/S
+            // https://mempool.space/api/block/<endpoint>
+            // https://mempool.space/api/block/<block_hash>
+            // BLOCK
             block: matches.opt_str("block"),
+            // https://mempool.space/api/block/<block_hash>/header
+            block_header: matches.opt_str("block_header"),
+            // BLOCK_HEIGHT
+            // https://mempool.space/api/block-height/615615
+            block_height: matches.opt_str("block_height"),
+
+            // V1 MINING BLOCKS
+            // https://mempool.space/api/v1/mining/blocks/timestamp/<UTC_SECS>"
+            block_timestamp: matches.opt_str("block_timestamp"),
+
+            // BLOCK
+            // https://mempool.space/api/block/<block_hash>/raw
+            block_raw: matches.opt_str("block_raw"),
+            // https://mempool.space/api/block/<block_hash>/status
+            block_status: matches.opt_str("block_status"),
+
+            // BLOCKS
+            // BLOCKS TIP HEIGHT
+            // https://mempool.space/api/blocks/tip/height
+            blocks_tip_height: matches.opt_str("blocks_tip_height"),
+            // BLOCKS TIP HASH
+            // https://mempool.space/api/blocks/tip/hash
+            blocks_tip_hash: matches.opt_str("blocks_tip_hash"),
+
+            // BLOCK
+            // BLOCK BLOCK_HASH TXID INDEX
+            // https://mempool.space/api/block/<block_hash>/<txid>/<index>
+            block_txid: matches.opt_str("block_txid"),
+            // BLOCK BLOCK_HASH TXIDS
+            // https://mempool.space/api/block/<block_hash>/<txids>
+            block_txids: matches.opt_str("block_txids"),
+            // BLOCK BLOCK_HASH TXS
+            // https://mempool.space/api/block/<block_hash>/<txs>
+            block_txs: matches.opt_str("block_txs"),
+
+            // V1 BLOCKS
+            // https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>"
+            blocks: matches.opt_str("blocks"),
+            // V1 BLOCKS_BULK
+            // https://mempool.space/api/v1/blocks-bulk/<BLOCK_HEIGHT_START>/<BLOCK_HEIGHT_STOP>"
+            blocks_bulk: matches.opt_str("blocks_bulk"),
 
             server: matches.opt_str("s"),
             auth: matches.opt_str("a"),
