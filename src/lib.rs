@@ -204,6 +204,12 @@ mod tests {
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
+    #[test]
+    fn test_address_txs(){
+        /// GET /api/address/:address
+        let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs").clone();
+        let prices: &str = blocking(&binding).expect("REASON");
+    }
 
     /// Blocks
     #[test]
