@@ -233,23 +233,24 @@ mod tests {
     fn test_address() {
         // GET /api/address/:address
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv").clone();
-        let prices: &str = blocking(&binding).expect("test_address failed");
-        let prices = generic_sys_call("address", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        let address: &str = blocking(&binding).expect("test_address failed");
+        let address = generic_sys_call("address", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
     fn test_address_txs() {
         // GET /api/address/:address/txs
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs").clone();
-        let prices: &str = blocking(&binding).expect("REASON");
-        let prices = generic_sys_call("address_txs", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        let address_txs: &str = blocking(&binding).expect("test_address_txs failed");
+        let address_txs = generic_sys_call("address_txs", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
     fn test_address_txs_chain() {
         // GET /api/address/:address/txs/chain
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain").clone();
-        let prices: &str = blocking(&binding).expect("REASON");
+        let address_txs_chain: &str = blocking(&binding).expect("REASON");
+        let address_txs_chain = generic_sys_call("address_txs_chain", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
