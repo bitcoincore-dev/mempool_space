@@ -71,7 +71,6 @@ pub fn historical_price(currency: &str, timestamp: &str) {
 ///
 #[derive(Debug, Default)]
 pub struct Args {
-
     // VERSION
     // pub version: Option<String>,
     /// `https://mempool.space/api/v1/difficulty-adjustment`
@@ -229,9 +228,6 @@ impl Args {
             generic_sys_call("validate_address", &validate_address.unwrap());
             std::process::exit(0);
         }
-
-
-
 
         if matches.opt_present("block") {
             print!("69:block");
