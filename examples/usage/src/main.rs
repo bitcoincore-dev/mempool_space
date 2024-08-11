@@ -10,7 +10,7 @@ use mempool_space::*;
 
 fn main() {
     // Construct ICMP Target check if the target is availabile
-    let icmp_target = IcmpTarget::from_str("www.google.de").unwrap();
+    let icmp_target = IcmpTarget::from_str("mempool.space").unwrap();
     match icmp_target.check_availability() {
         Ok(status) => println!("{} is {}", icmp_target.get_id(), status),
         Err(error) => println!("Check failed for {} reason {}", icmp_target.get_id(), error),

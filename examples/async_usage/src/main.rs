@@ -12,8 +12,8 @@ use mempool_space::*;
 
 fn main() {
     // Setup AsyncTargets
-    let icmp_target = IcmpTarget::from_str("www.google.de").unwrap();
-    let tcp_target = TcpTarget::from_str("www.google.de:80").unwrap();
+    let icmp_target = IcmpTarget::from_str("mempool.space").unwrap();
+    let tcp_target = TcpTarget::from_str("mempool.space:80").unwrap();
 
     let handler = |target: &dyn Target, status, old_status, error| {
         print!("Target \"{}\"", target.get_id());
