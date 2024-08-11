@@ -215,17 +215,23 @@ impl Args {
         // ADDRESSES
         if matches.opt_present("address") {
             let address = matches.opt_str("address");
-            //print!("86:address={}", address.unwrap());
             generic_sys_call("address", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("address_txs") {
             let address = matches.opt_str("address_txs");
-            //print!("86:address-txs");
-            //TODO support --address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv --address_txs <no arg>
             generic_sys_call("address_txs", &address.unwrap());
             std::process::exit(0);
         }
+        if matches.opt_present("validate_address") {
+            let validate_address = matches.opt_str("validate_address");
+            generic_sys_call("v1/validate_address", &validate_address.unwrap());
+            std::process::exit(0);
+        }
+
+
+
+
         if matches.opt_present("block") {
             print!("69:block");
             std::process::exit(0);

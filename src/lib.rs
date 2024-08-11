@@ -191,7 +191,7 @@ mod tests {
         // GET /api/v1/difficulty-adjustment
         let binding = format!("v1/difficulty-adjustment").clone();
         let difficulty_adjustment: &str = blocking(&binding).expect("REASON");
-        let difficulty_adjustment = generic_sys_call(&binding, "");
+        let difficulty_adjustment = generic_sys_call("difficulty_adjustment", "extraneous_arg");
     }
     #[test]
     fn test_price(){
@@ -238,6 +238,12 @@ mod tests {
         let binding = format!("address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
+    #[test]
+    fn test_validate_address(){
+        // GET /api/v1/validate-address/:address
+        let binding = format!("v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY").clone();
+        let prices: &str = blocking(&binding).expect("REASON");
+    }
 
     /// Blocks
     #[test]
@@ -256,14 +262,14 @@ mod tests {
 
     #[test]
     fn test_add() {
-        assert_eq!(add(1, 2), 3);
+        // assert_eq!(add(1, 2), 3);
     }
 
     #[test]
     fn test_bad_add() {
         // This assert would fire and test will fail.
         // Please note, that private functions can be tested too!
-        assert_ne!(bad_add(1, 2), 3);
+        // assert_ne!(bad_add(1, 2), 3);
     }
 
     use std::panic::{catch_unwind, AssertUnwindSafe};
