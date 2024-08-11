@@ -31,6 +31,9 @@ cargo-i:cargo-install
 cargo-install:### 	cargo install --path jj
 	@. $(HOME)/.cargo/env
 	@cargo install --path . $(FORCE)
+cargo-bench:### 	cargo-bench
+	@. $(HOME)/.cargo/env
+	@cargo bench
 cargo-br:cargo-build-release### 	cargo-br
 ## 	cargo-br q=true
 cargo-build-release:### 	cargo-build-release
@@ -41,9 +44,10 @@ cargo-c:cargo-check
 cargo-check:### 	cargo-check
 	@. $(HOME)/.cargo/env
 	@cargo c
-cargo-bench:### 	cargo-bench
+cargo-d:cargo-doc
+cargo-doc:### 	cargo-check
 	@. $(HOME)/.cargo/env
-	@cargo bench
+	@cargo doc --no-deps --all-features
 cargo-t:cargo-test
 cargo-test:### 	cargo-test
 	@. $(HOME)/.cargo/env
