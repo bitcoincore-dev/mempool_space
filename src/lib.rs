@@ -20,7 +20,10 @@ const URL: &str = "https://mempool.space/api";
 ///  `pub fn blocking(api: &String) -> Result<&str>`
 pub fn blocking(api: &String) -> Result<&str> {
     let call = format!("{}/{}", URL, api);
-    let mut body = ureq::get(&call).call().expect("calls to blocking(api: &String) needs to include /v1/<api_endpoint> in some cases.").into_reader();
+    let mut body = ureq::get(&call)
+        .call()
+        .expect("calls to blocking(api: &String) needs to include /v1/<api_endpoint> in some cases.")
+        .into_reader();
     let mut buf = Vec::new();
     body.read_to_end(&mut buf).unwrap();
     let text = match std::str::from_utf8(&buf) {
