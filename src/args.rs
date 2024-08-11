@@ -159,6 +159,7 @@ impl Args {
         opts.optopt("", "address", "address api call", "ADDRESS");
         opts.optopt("", "address_txs", "address_txs api call", "ADDRESS_TXS");
         opts.optopt("", "address_utxos", "address_utxos api call", "ADDRESS_UTXOS");
+        opts.optopt("", "validate_address", "validate an address", "VALIDATE_ADDRESS");
 
         opts.optopt("", "block", "block api call", "BLOCK");
 
@@ -225,7 +226,7 @@ impl Args {
         }
         if matches.opt_present("validate_address") {
             let validate_address = matches.opt_str("validate_address");
-            generic_sys_call("v1/validate_address", &validate_address.unwrap());
+            generic_sys_call("validate_address", &validate_address.unwrap());
             std::process::exit(0);
         }
 
