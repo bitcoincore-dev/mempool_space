@@ -84,7 +84,7 @@ pub struct Args {
     /// `https://mempool.space/api/v1/historical-price?currency=USD?timestamp=0`
     pub timestamp: Option<String>,
 
-    // ADDRESSES
+    /// - ADDRESSES
     /// `https://mempool.space/api/address/<ADDRESS>`
     pub address: Option<String>,
     /// `https://mempool.space/api/address/<ADDRESS>/txs`
@@ -101,6 +101,8 @@ pub struct Args {
     /// - BLOCK
     /// `https://mempool.space/api/block/<BLOCK_HASH>`
     pub block: Option<String>,
+
+    /// - BLOCK_HEADER
     /// `https://mempool.space/api/block/<BLOCK_HASH>/header`
     pub block_header: Option<String>,
 
@@ -213,7 +215,10 @@ impl Args {
         opts.optopt("", "address_utxos", "address_utxos api call", "ADDRESS_UTXOS");
         opts.optopt("", "validate_address", "validate an address", "VALIDATE_ADDRESS");
 
+        // BLOCK/S
         opts.optopt("", "block", "block api call", "BLOCK");
+        opts.optopt("", "block_header", "block-header api call", "BLOCK_HEADER");
+        opts.optopt("", "block_height", "block-height api call", "BLOCK_HEIGHT");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -293,7 +298,18 @@ impl Args {
         }
 
         if matches.opt_present("block") {
-            print!("69:block");
+            let block = matches.opt_str("block");
+            generic_sys_call("block", &block.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("block_header") {
+            let block_header = matches.opt_str("block_header");
+            generic_sys_call("block_header", &block_header.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("block_height") {
+            let block_height = matches.opt_str("block_height");
+            generic_sys_call("block_height", &block_height.unwrap());
             std::process::exit(0);
         }
 
