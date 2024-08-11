@@ -178,11 +178,18 @@ pub fn run(args: Args) -> Result<()> {
 //     a - b
 // }
 
-pub fn wait(){
+pub fn wait(sleep: &str) {
     use std::process::Command;
-        let mut child = Command::new("sleep").arg("5").spawn().unwrap();
-        let _result = child.wait().unwrap();
-    let _result = child.wait().unwrap();
+    let sleep_cmd = Command::new("sleep").arg(sleep).output().expect("wait:sleep failed");
+    let result = String::from_utf8(sleep_cmd.stdout)
+        .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+        .unwrap();
+    println!("\nwait:sleep:{:?}:{}", sleep, result);
+    // if result.unwrap().len() <= 0 {
+    //     true
+    // } else {
+    //     false
+    // }
 }
 
 #[cfg(test)]
@@ -194,20 +201,20 @@ mod tests {
     /// https://mempool.space/docs/api/rest
     /// cargo test -- --nocapture
     #[test]
-    fn test_difficulty_adjustment(){
+    fn test_difficulty_adjustment() {
         // GET /api/v1/difficulty-adjustment
         let binding = format!("v1/difficulty-adjustment").clone();
         let difficulty_adjustment: &str = blocking(&binding).expect("REASON");
         let difficulty_adjustment = generic_sys_call("difficulty_adjustment", "extraneous_arg");
-        wait();
+        wait("1");
     }
     #[test]
-    fn test_price(){
+    fn test_price() {
         // GET /api/v1/prices
         let binding = format!("v1/prices").clone();
         let prices: &str = blocking(&binding).expect("REASON");
         let prices = generic_sys_call("prices", "extraneous_arg");
-        wait();
+        wait("1");
     }
     #[test]
     fn test_historical_price() {
@@ -215,52 +222,53 @@ mod tests {
         let historical_price_json = historical_price(&"EUR", &"1500000000");
         print!("\n{{\"prices\":[{{\"time\":1499904000,\"EUR\":1964,\"USD\":2254.9}}],\"exchangeRates\":{{\"USDEUR\":0.92,\"USDGBP\":0.78,\"USDCAD\":1.38,\"USDCHF\":0.87,\"USDAUD\":1.53,\"USDJPY\":146.62}}}}\n");
         let historical_prices = generic_sys_call("historical_price", "USD");
-        wait();
+        wait("1");
     }
-
 
     /// Addresses
     #[test]
-    fn test_address(){
+    fn test_address() {
         // GET /api/address/:address
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv").clone();
-        let prices: &str = blocking(&binding).expect("REASON");
-        wait();
+        let prices: &str = blocking(&binding).expect("test_address failed");
+        let prices = generic_sys_call("address", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        wait("1");
     }
     #[test]
-    fn test_address_txs(){
+    fn test_address_txs() {
         // GET /api/address/:address/txs
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs").clone();
         let prices: &str = blocking(&binding).expect("REASON");
-        wait();
+        let prices = generic_sys_call("address_txs", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        wait("1");
     }
     #[test]
-    fn test_address_txs_chain(){
+    fn test_address_txs_chain() {
         // GET /api/address/:address/txs/chain
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain").clone();
         let prices: &str = blocking(&binding).expect("REASON");
-        wait();
+        wait("1");
     }
     #[test]
-    fn test_address_txs_mempool(){
+    fn test_address_txs_mempool() {
         // GET /api/address/:address/txs/mempool
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool").clone();
         let prices: &str = blocking(&binding).expect("REASON");
-        wait();
+        wait("1");
     }
     #[test]
-    fn test_address_txs_utxo(){
+    fn test_address_txs_utxo() {
         // GET /api/address/:address/utxo
         let binding = format!("address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo").clone();
         let prices: &str = blocking(&binding).expect("REASON");
-        wait();
+        wait("1");
     }
     #[test]
-    fn test_validate_address(){
+    fn test_validate_address() {
         // GET /api/v1/validate-address/:address
         let binding = format!("v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY").clone();
         let prices: &str = blocking(&binding).expect("REASON");
-        wait();
+        wait("1");
     }
 
     /// Blocks
@@ -268,7 +276,7 @@ mod tests {
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();
         assert_ne!(0 as f64, blockheight.unwrap());
-        wait();
+        wait("1");
     }
     /// Mining
     /// Fees
@@ -278,11 +286,10 @@ mod tests {
     /// Accelerator (Public)
     /// Accelerator (Authenticated)
 
-
     #[test]
     fn test_add() {
         // assert_eq!(add(1, 2), 3);
-        wait();
+        wait("1");
     }
 
     #[test]
@@ -290,7 +297,7 @@ mod tests {
         // This assert would fire and test will fail.
         // Please note, that private functions can be tested too!
         // assert_ne!(bad_add(1, 2), 3);
-        wait();
+        wait("1");
     }
 
     use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -301,6 +308,6 @@ mod tests {
         }));
 
         assert_ne!("foo panic message", *msg.unwrap_err().downcast_ref::<&str>().unwrap());
-        wait();
+        wait("1");
     }
 }
