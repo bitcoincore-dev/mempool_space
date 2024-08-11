@@ -206,14 +206,20 @@ mod tests {
     }
     #[test]
     fn test_address_txs(){
-        /// GET /api/address/:address
+        /// GET /api/address/:address/txs
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
     #[test]
     fn test_address_txs_chain(){
-        /// GET /api/address/:address
+        /// GET /api/address/:address/txs/chain
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain").clone();
+        let prices: &str = blocking(&binding).expect("REASON");
+    }
+    #[test]
+    fn test_address_txs_mempool(){
+        /// GET /api/address/:address/txs/mempool
+        let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool").clone();
         let prices: &str = blocking(&binding).expect("REASON");
     }
 
