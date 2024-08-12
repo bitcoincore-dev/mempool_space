@@ -299,12 +299,22 @@ mod tests {
         wait("1");
     }
     fn test_block_height() {
-        // GET /api/block/:block-height/height
+        // GET /api/block-height:height
         let binding = format!("block-height/615615").clone();
         let block_height: &str = blocking(&binding).expect("an existing block hash is needed");
         let block_height= generic_sys_call(
             "block_height",
             "615615",
+        );
+        wait("1");
+    }
+    fn test_timestamp() {
+        // GET /api/v1/mining/blocks/timestamp/:timestamp
+        let binding = format!("v1/mining/blocks/timestamp/1672531200").clone();
+        let timestamp: &str = blocking(&binding).expect("an existing block hash is needed");
+        let timestamp= generic_sys_call(
+            "timestamp",
+            "1672531200",
         );
         wait("1");
     }

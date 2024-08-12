@@ -112,7 +112,7 @@ pub struct Args {
 
     /// - V1 MINING BLOCKS TIMESTAMP <UTC_SECS>
     /// `https://mempool.space/api/v1/mining/blocks/timestamp/<UTC_SECS>`
-    pub block_timestamp: Option<String>,
+    pub blocks_timestamp: Option<String>,
 
     /// - BLOCK
     /// `https://mempool.space/api/block/<BLOCK_HASH>/raw`
@@ -219,6 +219,7 @@ impl Args {
         opts.optopt("", "block", "block api call", "BLOCK");
         opts.optopt("", "block_header", "block-header api call", "BLOCK_HEADER");
         opts.optopt("", "block_height", "block-height api call", "BLOCK_HEIGHT");
+        opts.optopt("", "blocks_timestamp", "blocks-timestamp api call", "BLOCKS_TIMESTAMP");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -312,6 +313,12 @@ impl Args {
             generic_sys_call("block_height", &block_height.unwrap());
             std::process::exit(0);
         }
+        //blocks_timestamp
+        if matches.opt_present("blocks_timestamp") {
+            let blocks_timestamp = matches.opt_str("blocks_timestamp");
+            generic_sys_call("blocks_timestamp", &blocks_timestamp.unwrap());
+            std::process::exit(0);
+        }
 
         if matches.opt_present("h")
             || (matches.free.is_empty()
@@ -380,9 +387,9 @@ impl Args {
             // https://mempool.space/api/block-height/615615
             block_height: matches.opt_str("block_height"),
 
-            // V1 MINING BLOCKS
+            // V1 MINING BLOCKS TIMESTAMP
             // https://mempool.space/api/v1/mining/blocks/timestamp/<UTC_SECS>"
-            block_timestamp: matches.opt_str("block_timestamp"),
+            blocks_timestamp: matches.opt_str("blocks_timestamp"),
 
             // BLOCK
             // https://mempool.space/api/block/<block_hash>/raw
