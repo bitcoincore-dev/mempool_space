@@ -19,6 +19,7 @@ const URL: &str = "https://mempool.space/api";
 
 ///  `pub fn blocking(api: &String) -> Result<&str>`
 pub fn blocking(api: &String) -> Result<&str> {
+    //print!("api={}", api);
     let call = format!("{}/{}", URL, api);
     let mut body = ureq::get(&call)
         .call()
@@ -26,11 +27,23 @@ pub fn blocking(api: &String) -> Result<&str> {
         .into_reader();
     let mut buf = Vec::new();
     body.read_to_end(&mut buf).unwrap();
-    let text = match std::str::from_utf8(&buf) {
-        Ok(s) => s,
-        Err(_) => panic!("Invalid ASCII data"),
-    };
-    print!("{}", text);
+    if !api.ends_with("raw") {
+        //print!("!api.ends_with raw");
+        let text = match std::str::from_utf8(&buf) {
+            Ok(s) => s,
+            Err(_) => panic!("Invalid ASCII data"),
+        };
+        print!("{}", text);
+    } else {
+        if api.ends_with("raw") {
+            //print!("api.ends_with raw");
+            print!("{:?}", &buf);
+        }
+        if api.ends_with("something_else") {
+            //print!("api.ends_with something_else");
+            print!("{:?}", &buf);
+        }
+    }
     Ok(api)
 }
 
@@ -302,21 +315,25 @@ mod tests {
         // GET /api/block-height:height
         let binding = format!("block-height/615615").clone();
         let block_height: &str = blocking(&binding).expect("an existing block hash is needed");
-        let block_height= generic_sys_call(
-            "block_height",
-            "615615",
-        );
+        let block_height = generic_sys_call("block_height", "615615");
         wait("1");
     }
-    fn test_timestamp() {
+    fn test_blocks_timestamp() {
         // GET /api/v1/mining/blocks/timestamp/:timestamp
         let binding = format!("v1/mining/blocks/timestamp/1672531200").clone();
         let timestamp: &str = blocking(&binding).expect("an existing block hash is needed");
-        let timestamp= generic_sys_call(
-            "timestamp",
-            "1672531200",
-        );
+        let timestamp = generic_sys_call("blocks_timestamp", "1672531200");
         wait("1");
+    }
+    fn test_block_raw() {
+        // GET /api/block/:hash/raw
+        let binding = format!("block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2").clone();
+        let block_raw: &str = blocking(&binding).expect("an existing block hash is needed");
+        let block_raw = generic_sys_call(
+            "block_raw",
+            "0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2",
+        );
+        wait("100");
     }
 
     #[test]
