@@ -360,6 +360,14 @@ mod tests {
         wait("1");
     }
     #[test]
+    fn test_blocks_tip_hash() {
+        // GET /api/blocks/tip/hash
+        let binding = format!("blocks/tip/hash").clone();
+        let block_raw: &str = blocking(&binding).expect("returns current block/tip/hash");
+        let block_raw = generic_sys_call("blocks_tip_hash", "extraneous_arg");
+        wait("1");
+    }
+    #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();
         assert_ne!(0 as f64, blockheight.unwrap());

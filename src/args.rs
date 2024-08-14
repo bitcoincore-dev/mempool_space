@@ -224,6 +224,7 @@ impl Args {
         opts.optopt("", "block_status", "block-status api call", "BLOCK_STATUS");
 
         opts.optflag("", "blocks_tip_height", "GET /api/blocks/tip/height api call");
+        opts.optflag("", "blocks_tip_hash", "GET /api/blocks/tip/hash api call");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -335,6 +336,10 @@ impl Args {
         }
         if matches.opt_present("blocks_tip_height") {
             generic_sys_call("blocks_tip_height", &"extraneous_arg");
+            std::process::exit(0);
+        }
+        if matches.opt_present("blocks_tip_hash") {
+            generic_sys_call("blocks_tip_hash", &"extraneous_arg");
             std::process::exit(0);
         }
 
