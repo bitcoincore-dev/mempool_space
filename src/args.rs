@@ -221,6 +221,7 @@ impl Args {
         opts.optopt("", "block_height", "block-height api call", "BLOCK_HEIGHT");
         opts.optopt("", "blocks_timestamp", "blocks-timestamp api call", "BLOCKS_TIMESTAMP");
         opts.optopt("", "block_raw", "block-raw api call", "BLOCK_RAW");
+        opts.optopt("", "block_status", "block-status api call", "BLOCK_STATUS");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -323,6 +324,11 @@ impl Args {
         if matches.opt_present("block_raw") {
             let block_raw = matches.opt_str("block_raw");
             generic_sys_call("block_raw", &block_raw.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("block_status") {
+            let block_status = matches.opt_str("block_status");
+            generic_sys_call("block_status", &block_status.unwrap());
             std::process::exit(0);
         }
 

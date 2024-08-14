@@ -336,6 +336,16 @@ mod tests {
         wait("100");
     }
 
+    fn test_block_status() {
+        // GET /api/block/:hash/status
+        let binding = format!("block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2").clone();
+        let block_raw: &str = blocking(&binding).expect("an existing block hash is needed");
+        let block_raw = generic_sys_call(
+            "block_status",
+            "0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2",
+        );
+        wait("100");
+    }
     #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();
