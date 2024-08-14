@@ -346,6 +346,13 @@ mod tests {
         );
         wait("100");
     }
+    fn test_blocks_tip_height() {
+        // GET /api/blocks/tip/height
+        let binding = format!("blocks_tip_height").clone();
+        let block_raw: &str = blocking(&binding).expect("returns current block_height");
+        let block_raw = generic_sys_call("blocks_tip_height", "extraneous_arg");
+        wait("100");
+    }
     #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();

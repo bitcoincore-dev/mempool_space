@@ -223,6 +223,8 @@ impl Args {
         opts.optopt("", "block_raw", "block-raw api call", "BLOCK_RAW");
         opts.optopt("", "block_status", "block-status api call", "BLOCK_STATUS");
 
+        opts.optflag("", "blocks_tip_height", "GET /api/blocks/tip/height api call");
+
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
         opts.optopt("s", "server", "sets the address of the rustypaste server", "SERVER");
@@ -329,6 +331,11 @@ impl Args {
         if matches.opt_present("block_status") {
             let block_status = matches.opt_str("block_status");
             generic_sys_call("block_status", &block_status.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("blocks_tip_height") {
+            let blocks_tip_height = matches.opt_str("blocks_tip_height");
+            generic_sys_call("blocks_tip_height", &"");
             std::process::exit(0);
         }
 
