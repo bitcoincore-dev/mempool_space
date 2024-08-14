@@ -301,6 +301,7 @@ mod tests {
         );
         wait("1");
     }
+    #[test]
     fn test_block_header() {
         // GET /api/block/:hash/header
         let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce").clone();
@@ -311,6 +312,7 @@ mod tests {
         );
         wait("1");
     }
+    #[test]
     fn test_block_height() {
         // GET /api/block-height:height
         let binding = format!("block-height/615615").clone();
@@ -318,6 +320,7 @@ mod tests {
         let block_height = generic_sys_call("block_height", "615615");
         wait("1");
     }
+    #[test]
     fn test_blocks_timestamp() {
         // GET /api/v1/mining/blocks/timestamp/:timestamp
         let binding = format!("v1/mining/blocks/timestamp/1672531200").clone();
@@ -325,6 +328,7 @@ mod tests {
         let timestamp = generic_sys_call("blocks_timestamp", "1672531200");
         wait("1");
     }
+    #[test]
     fn test_block_raw() {
         // GET /api/block/:hash/raw
         let binding = format!("block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2").clone();
@@ -333,9 +337,10 @@ mod tests {
             "block_raw",
             "0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2",
         );
-        wait("100");
+        wait("1");
     }
 
+    #[test]
     fn test_block_status() {
         // GET /api/block/:hash/status
         let binding = format!("block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2").clone();
@@ -344,14 +349,15 @@ mod tests {
             "block_status",
             "0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2",
         );
-        wait("100");
+        wait("1");
     }
+    #[test]
     fn test_blocks_tip_height() {
         // GET /api/blocks/tip/height
-        let binding = format!("blocks_tip_height").clone();
+        let binding = format!("blocks/tip/height").clone();
         let block_raw: &str = blocking(&binding).expect("returns current block_height");
         let block_raw = generic_sys_call("blocks_tip_height", "extraneous_arg");
-        wait("100");
+        wait("1");
     }
     #[test]
     fn test_blockheight() {
@@ -380,7 +386,6 @@ mod tests {
         // assert_ne!(bad_add(1, 2), 3);
         wait("1");
     }
-
     use std::panic::{catch_unwind, AssertUnwindSafe};
     #[test]
     fn should_panic() {

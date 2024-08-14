@@ -334,8 +334,7 @@ impl Args {
             std::process::exit(0);
         }
         if matches.opt_present("blocks_tip_height") {
-            let blocks_tip_height = matches.opt_str("blocks_tip_height");
-            generic_sys_call("blocks_tip_height", &"");
+            generic_sys_call("blocks_tip_height", &"extraneous_arg");
             std::process::exit(0);
         }
 
