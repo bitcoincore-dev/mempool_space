@@ -435,6 +435,22 @@ mod tests {
         wait("1");
     }
     #[test]
+    //#[should_panic(expected = "This API is disabled. Set config.MEMPOOL.MAX_BLOCKS_BULK_QUERY to a positive number to enable it.
+    #[should_panic]
+    fn test_blocks_bulk() {
+        // GET /api/v1/blocks-bulk/:minHeight[/:maxHeight]
+        let binding = format!("v1/blocks-bulk/730000/840000").clone();
+        let get_block_txid: &str = blocking(&binding).expect("returns current txid from block index");
+
+        let get_block_txid = generic_sys_call("blocks_bulk", "730000/840000");
+        let blocks_tip_height = generic_sys_call("blocks_tip_height", "extraneous_arg");
+        use crate::args::blocks_bulk;
+        blocks_bulk(&"0", &"0");
+        blocks_bulk(&"0", &"1");
+        blocks_bulk(&"730000", &"840000");
+        wait("1");
+    }
+    #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();
         assert_ne!(0 as f64, blockheight.unwrap());

@@ -71,11 +71,28 @@ pub fn block_txs(block_hash: &str, start_index: &str) {
 /// <https://mempool.space/docs/api/rest#get-blocks>
 pub fn blocks(start_height: &str) {
     //TODO blocks_tip_height
+    let blocks_tip_height = generic_sys_call("blocks_tip_height", &"extraneous_arg");
+    let blocks_tip_height_int = blocks_tip_height.parse::<i32>().unwrap_or(0);
     let start_height_int = start_height.parse::<i32>().unwrap_or(0);
-    if start_height_int >= 0 {
+    if start_height_int >= 0 && start_height_int <= blocks_tip_height_int {
         let _res = blocking(&format!("v1/blocks/{}", start_height));
     } else {
         let _res = blocking(&format!("v1/blocks"));
+    }
+}
+/// GET /api/v1/blocks-bulk/:minHeight[/:maxHeight]
+/// <https://mempool.space/docs/api/rest#get-blocks-bulk>
+pub fn blocks_bulk(min_height: &str, max_height: &str) {
+    //TODO blocks_tip_height
+    let min_height_int = min_height.parse::<i32>().unwrap_or(0);
+    let max_height_int = max_height.parse::<i32>().unwrap_or(0);
+    if min_height_int >= 0 && max_height_int >= 0 && min_height_int <= max_height_int {
+        let _res = blocking(&format!("v1/blocks-bulk/{}/{}", min_height, max_height));
+    } else if min_height_int >= 0 && max_height_int >= 0 && min_height_int >= max_height_int {
+        let _res = blocking(&format!("v1/blocks-bulk/{}/{}", max_height, min_height));
+    } else {
+        let blocks_tip_height = generic_sys_call("blocks_tip_height", &"extraneous_arg");
+        let _res = blocking(&format!("v1/blocks-bulk/{}/{}", min_height, blocks_tip_height));
     }
 }
 
