@@ -368,6 +368,40 @@ mod tests {
         wait("1");
     }
     #[test]
+    fn test_block_txid() {
+        // GET /api/block/:hash/txid/:index
+        let binding =
+            format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txid/218").clone();
+        let block_txid: &str = blocking(&binding).expect("returns current txid from block index");
+        let get_block_txid = generic_sys_call(
+            "block_txid",
+            "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txid/218",
+        );
+        use crate::args::block_tx_id;
+        let _ = block_tx_id(
+            &"000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce",
+            &"218",
+        );
+        wait("1");
+    }
+    #[test]
+    fn test_block_txids() {
+        // GET /api/block/:hash/txids
+        let binding =
+            format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txids").clone();
+        let block_txid: &str = blocking(&binding).expect("returns current txids from block");
+        let get_block_txids = generic_sys_call(
+            "block_txid",
+            "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txids",
+        );
+        use crate::args::block_tx_id;
+        let _ = block_tx_id(
+            &"000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce",
+            &"218",
+        );
+        wait("1");
+    }
+    #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();
         assert_ne!(0 as f64, blockheight.unwrap());

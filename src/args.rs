@@ -43,11 +43,25 @@ pub fn historical_price(currency: &str, timestamp: &str) {
         &format!("{:}", &currency),
         &format!("{:}", &timestamp)
     ));
-    // let _res = blocking(&format!(
-    //     "v1/historical-price?currency={}&timestamp={}",
-    //     &format!("{:}", "EUR"),
-    //     &format!("{:}", "1500000000")
-    // ));
+}
+//GET /api/block/:hash/txid/:index
+//https://mempool.space/docs/api/rest#get-block-transaction-id
+pub fn block_tx_id(block_hash: &str, txindex: &str) {
+    //REF: mempool-space --block_txid 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce --txindex 218
+    //EXPECT: 0fa6da60e484941f255cbb025c3d6440e5a7e970119e899b4065c7999360e406
+    let _res = blocking(&format!("block/{}/txid/{}", block_hash, txindex));
+}
+//GET /api/block/:hash/txids
+//https://mempool.space/docs/api/rest#get-block-transaction-ids
+pub fn block_tx_ids(block_hash: &str) {
+    //REF: mempool-space --block_txids 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce
+    //EXPECT:
+    // [
+    // "cfe624ccdd8010cf78dbedd1b25e1ff601b470c4d7d90fa9fc8c1bcc5cdc6e0e",
+    // "a5ef89881bd5103f223a0fa285dfc75f4718974cb792cf85e623a7de05801bc9",
+    // ...,
+    // ]
+    let _res = blocking(&format!("block/{}/txids", block_hash));
 }
 
 /// <https://mempool.space/docs/api/rest>
@@ -130,6 +144,8 @@ pub struct Args {
     /// - BLOCK <BLOCK_HASH> <TXID> <INDEX>
     /// `https://mempool.space/api/block/<TXID>/<INDEX>`
     pub block_txid: Option<String>,
+    pub block_txindex: Option<String>,
+
     /// - BLOCK <BLOCK_HASH> <TXIDS>
     /// `https://mempool.space/api/block/<TXID>`
     pub block_txids: Option<String>,
@@ -225,6 +241,14 @@ impl Args {
 
         opts.optflag("", "blocks_tip_height", "GET /api/blocks/tip/height api call");
         opts.optflag("", "blocks_tip_hash", "GET /api/blocks/tip/hash api call");
+
+        opts.optopt("", "block_txid", "block txid api call", "BLOCK_TXID");
+        opts.optopt("", "block_txindex", "block_txindex api call", "BLOCK_TXINDEX");
+
+        opts.optopt("", "block_txids", "block txids api call", "BLOCK_TXIDS");
+        opts.optopt("", "block_txs", "block txids api call", "BLOCK_TXS");
+        opts.optopt("", "blocks", "block txids api call", "BLOCKS");
+        opts.optopt("", "blocks_bulk", "block txids api call", "BLOCKS_BULK");
 
         //OPTOPT
         opts.optopt("c", "config", "sets the configuration file", "CONFIG");
@@ -342,7 +366,17 @@ impl Args {
             generic_sys_call("blocks_tip_hash", &"extraneous_arg");
             std::process::exit(0);
         }
-
+        if matches.opt_present("block_txid") {
+            let block_txid = matches.opt_str("block_txid"); //expect a block_hash
+            let block_txindex = matches.opt_str("block_txindex");
+            block_tx_id(&block_txid.unwrap(), &block_txindex.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("block_txids") {
+            let block_txids = matches.opt_str("block_txids"); //expect a block_hash
+            block_tx_ids(&block_txids.unwrap());
+            std::process::exit(0);
+        }
         if matches.opt_present("h")
             || (matches.free.is_empty()
                 && !matches.opt_present("u")
@@ -432,6 +466,7 @@ impl Args {
             // BLOCK BLOCK_HASH TXID INDEX
             // https://mempool.space/api/block/<block_hash>/<txid>/<index>
             block_txid: matches.opt_str("block_txid"),
+            block_txindex: matches.opt_str("block_txindex"),
             // BLOCK BLOCK_HASH TXIDS
             // https://mempool.space/api/block/<block_hash>/<txids>
             block_txids: matches.opt_str("block_txids"),
