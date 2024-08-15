@@ -6,6 +6,10 @@ use std::process;
 
 use crate::blocking;
 
+/// mempool-space_ARG
+/// mempool-space --arg
+/// mempool-space_ARG_STRING
+/// mempool-space --arg_string
 pub fn generic_sys_call(option: &str, sub_string: &str) {
     use std::process::Command;
 
@@ -33,35 +37,34 @@ pub fn generic_sys_call(option: &str, sub_string: &str) {
         print!("{}", result);
     }
 }
-
+/// GET /api/v1/historical-price?currency=CURRENCY&timestamp=TIMESTAMP
 /// <https://mempool.space/docs/api/rest#get-historical-price>
 pub fn historical_price(currency: &str, timestamp: &str) {
-    //REF: mempool-space --historical_price --currency EUR --timestamp 150000000
-    //EXPECT: {"prices":[{"time":1279497600,"EUR":0,"USD":0}],"exchangeRates":{"USDEUR":0.92,"USDGBP":0.78,"USDCAD":1.38,"USDCHF":0.87,"USDAUD":1.52,"USDJPY":146.79}}
     let _res = blocking(&format!(
         "v1/historical-price?currency={}&timestamp={}",
         &format!("{:}", &currency),
         &format!("{:}", &timestamp)
     ));
 }
-//GET /api/block/:hash/txid/:index
-//https://mempool.space/docs/api/rest#get-block-transaction-id
-pub fn block_tx_id(block_hash: &str, txindex: &str) {
-    //REF: mempool-space --block_txid 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce --txindex 218
-    //EXPECT: 0fa6da60e484941f255cbb025c3d6440e5a7e970119e899b4065c7999360e406
+/// GET /api/block/:hash/txid/:index
+/// <https://mempool.space/docs/api/rest#get-block-transaction-id>
+pub fn block_txid(block_hash: &str, txindex: &str) {
     let _res = blocking(&format!("block/{}/txid/{}", block_hash, txindex));
 }
-//GET /api/block/:hash/txids
-//https://mempool.space/docs/api/rest#get-block-transaction-ids
-pub fn block_tx_ids(block_hash: &str) {
-    //REF: mempool-space --block_txids 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce
-    //EXPECT:
-    // [
-    // "cfe624ccdd8010cf78dbedd1b25e1ff601b470c4d7d90fa9fc8c1bcc5cdc6e0e",
-    // "a5ef89881bd5103f223a0fa285dfc75f4718974cb792cf85e623a7de05801bc9",
-    // ...,
-    // ]
+/// GET /api/block/:hash/txids
+/// <https://mempool.space/docs/api/rest#get-block-transaction-ids>
+pub fn block_txids(block_hash: &str) {
     let _res = blocking(&format!("block/{}/txids", block_hash));
+}
+/// GET /api/block/:hash/txs[/:start_index] (start_index % 25 = 0)
+/// <https://mempool.space/docs/api/rest#get-block-transactions>
+pub fn block_txs(block_hash: &str, start_index: &str) {
+    let start_index_int = start_index.parse::<i32>().unwrap_or(0);
+    if start_index_int % 25 == 0 {
+        let _res = blocking(&format!("block/{}/txs/{}", block_hash, start_index));
+    } else {
+        let _res = blocking(&format!("block/{}/txs/{}", block_hash, &"0"));
+    }
 }
 
 /// <https://mempool.space/docs/api/rest>
@@ -153,6 +156,8 @@ pub struct Args {
     /// - BLOCK <BLOCK_HASH> <TXS>
     /// `https://mempool.space/api/block/<BLOCK_HASH>/txs`
     pub block_txs: Option<String>,
+    pub block_start_index: Option<String>,
+
     /// - V1 BLOCKS <BLOCK_HEIGHT>
     /// `https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>`
     pub blocks: Option<String>,
@@ -244,9 +249,11 @@ impl Args {
 
         opts.optopt("", "block_txid", "block txid api call", "BLOCK_TXID");
         opts.optopt("", "block_txindex", "block_txindex api call", "BLOCK_TXINDEX");
-
         opts.optopt("", "block_txids", "block txids api call", "BLOCK_TXIDS");
-        opts.optopt("", "block_txs", "block txids api call", "BLOCK_TXS");
+
+        opts.optopt("", "block_txs", "block txs api call", "BLOCK_TXS");
+        opts.optopt("", "block_start_index", "block txs api call", "BLOCK_START_INDEX");
+
         opts.optopt("", "blocks", "block txids api call", "BLOCKS");
         opts.optopt("", "blocks_bulk", "block txids api call", "BLOCKS_BULK");
 
@@ -367,16 +374,23 @@ impl Args {
             std::process::exit(0);
         }
         if matches.opt_present("block_txid") {
-            let block_txid = matches.opt_str("block_txid"); //expect a block_hash
-            let block_txindex = matches.opt_str("block_txindex");
-            block_tx_id(&block_txid.unwrap(), &block_txindex.unwrap());
+            let arg_block_txid = matches.opt_str("block_txid"); //expect a block_hash
+            let arg_block_txindex = matches.opt_str("block_txindex");
+            block_txid(&arg_block_txid.unwrap(), &arg_block_txindex.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("block_txids") {
-            let block_txids = matches.opt_str("block_txids"); //expect a block_hash
-            block_tx_ids(&block_txids.unwrap());
+            let arg_block_txids = matches.opt_str("block_txids"); //expect a block_hash
+            block_txids(&arg_block_txids.unwrap());
             std::process::exit(0);
         }
+        if matches.opt_present("block_txs") {
+            let arg_block_txs = matches.opt_str("block_txs"); //expect a block_hash
+            let arg_block_start_index = matches.opt_str("block_start_index");
+            block_txs(&arg_block_txs.unwrap(), &arg_block_start_index.unwrap());
+            std::process::exit(0);
+        }
+
         if matches.opt_present("h")
             || (matches.free.is_empty()
                 && !matches.opt_present("u")
@@ -473,6 +487,7 @@ impl Args {
             // BLOCK BLOCK_HASH TXS
             // https://mempool.space/api/block/<block_hash>/<txs>
             block_txs: matches.opt_str("block_txs"),
+            block_start_index: matches.opt_str("block_start_index"),
 
             // V1 BLOCKS
             // https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>"
