@@ -421,6 +421,20 @@ mod tests {
         );
     }
     #[test]
+    fn test_blocks() {
+        // GET /api/v1/blocks[/:startHeight]
+        let binding = format!("v1/blocks/730000").clone();
+        let get_block_txid: &str = blocking(&binding).expect("returns current txid from block index");
+        let get_block_txid = generic_sys_call("blocks", "730000");
+        let blocks_tip_height = generic_sys_call("blocks_tip_height", "extraneous_arg");
+        use crate::args::blocks;
+        blocks(&"");
+        blocks(&"0");
+        blocks(&"730000");
+        blocks(&blocks_tip_height);
+        wait("1");
+    }
+    #[test]
     fn test_blockheight() {
         let blockheight = blockheight::blockheight();
         assert_ne!(0 as f64, blockheight.unwrap());

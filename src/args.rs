@@ -10,32 +10,33 @@ use crate::blocking;
 /// mempool-space --arg
 /// mempool-space_ARG_STRING
 /// mempool-space --arg_string
-pub fn generic_sys_call(option: &str, sub_string: &str) {
+pub fn generic_sys_call(option: &str, sub_string: &str) -> String {
     use std::process::Command;
 
-    if sub_string == "v1" {
-        print!("TODO: support --version v1 api versioning.")
-    } else if sub_string == "v2" {
-        print!("TODO: support --version v2 api versioning.")
+    //if sub_string == "v1" {
+    //    print!("TODO: support --version v1 api versioning.");
+    //} else if sub_string == "v2" {
+    //    print!("TODO: support --version v2 api versioning.");
+    //} else {
+    let output = if cfg!(target_os = "windows") {
+        Command::new(format!("mempool-space_{}", option))
+            .args(["/C", sub_string])
+            .output()
+            .expect("failed to execute process")
     } else {
-        let output = if cfg!(target_os = "windows") {
-            Command::new(format!("mempool-space_{}", option))
-                .args(["/C", sub_string])
-                .output()
-                .expect("failed to execute process")
-        } else {
-            Command::new(format!("mempool-space_{}", option))
-                .arg(sub_string)
-                //.arg("echo hello")
-                .output()
-                .expect("failed to execute process")
-        };
+        Command::new(format!("mempool-space_{}", option))
+            .arg(sub_string)
+            //.arg("echo hello")
+            .output()
+            .expect("failed to execute process")
+    };
 
-        let result = String::from_utf8(output.stdout)
-            .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
-            .unwrap();
-        print!("{}", result);
-    }
+    let result = String::from_utf8(output.stdout)
+        .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+        .unwrap();
+    print!("{}", result);
+    result
+    //}
 }
 /// GET /api/v1/historical-price?currency=CURRENCY&timestamp=TIMESTAMP
 /// <https://mempool.space/docs/api/rest#get-historical-price>
@@ -64,6 +65,17 @@ pub fn block_txs(block_hash: &str, start_index: &str) {
         let _res = blocking(&format!("block/{}/txs/{}", block_hash, start_index));
     } else {
         let _res = blocking(&format!("block/{}/txs/{}", block_hash, &"0"));
+    }
+}
+/// GET /api/v1/blocks[/:startHeight]
+/// <https://mempool.space/docs/api/rest#get-blocks>
+pub fn blocks(start_height: &str) {
+    //TODO blocks_tip_height
+    let start_height_int = start_height.parse::<i32>().unwrap_or(0);
+    if start_height_int >= 0 {
+        let _res = blocking(&format!("v1/blocks/{}", start_height));
+    } else {
+        let _res = blocking(&format!("v1/blocks"));
     }
 }
 
@@ -159,8 +171,9 @@ pub struct Args {
     pub block_start_index: Option<String>,
 
     /// - V1 BLOCKS <BLOCK_HEIGHT>
-    /// `https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>`
+    /// `https://mempool.space/api/v1/blocks/<BLOCKS_START_HEIGHT>`
     pub blocks: Option<String>,
+
     /// - V1 BLOCKS_BULK <BLOCK_HEIGHT_START> <BLOCK_HEIGHT_STOP>
     /// `https://mempool.space/api/v1/blocks-bulk/<BLOCK_HEIGHT_START>/<BLOCK_HEIGHT_STOP>`
     pub blocks_bulk: Option<String>,
@@ -254,7 +267,7 @@ impl Args {
         opts.optopt("", "block_txs", "block txs api call", "BLOCK_TXS");
         opts.optopt("", "block_start_index", "block txs api call", "BLOCK_START_INDEX");
 
-        opts.optopt("", "blocks", "block txids api call", "BLOCKS");
+        opts.optopt("", "blocks", "block txids api call", "BLOCKS_START_HEIGHT");
         opts.optopt("", "blocks_bulk", "block txids api call", "BLOCKS_BULK");
 
         //OPTOPT
@@ -390,6 +403,11 @@ impl Args {
             block_txs(&arg_block_txs.unwrap(), &arg_block_start_index.unwrap());
             std::process::exit(0);
         }
+        if matches.opt_present("blocks") {
+            let arg_blocks = matches.opt_str("blocks"); //expect a integer as string
+            blocks(&arg_blocks.unwrap());
+            std::process::exit(0);
+        }
 
         if matches.opt_present("h")
             || (matches.free.is_empty()
@@ -492,6 +510,7 @@ impl Args {
             // V1 BLOCKS
             // https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>"
             blocks: matches.opt_str("blocks"),
+
             // V1 BLOCKS_BULK
             // https://mempool.space/api/v1/blocks-bulk/<BLOCK_HEIGHT_START>/<BLOCK_HEIGHT_STOP>"
             blocks_bulk: matches.opt_str("blocks_bulk"),
