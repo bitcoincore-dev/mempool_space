@@ -122,13 +122,33 @@ pub fn blocks_bulk(min_height: &str, max_height: &str) {
 ///         - GET /api/address/:address/utxo \<<https://mempool.space/api/address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo>\>
 ///         - GET /api/v1/validate-address/:address \<<https://mempool.space/api/v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY>\>
 ///     - [BLOCKS](https://mempool.space/docs/api/rest#get-block)
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
 ///     - [MINING](https://mempool.space/docs/api/rest#get-mining-pools)
+///         - GET \<< >\>
 ///     - [FEES](https://mempool.space/docs/api/rest#get-mempool-blocks-fees)
+///         - GET \<< >\>
 ///     - [MEMPOOL](https://mempool.space/docs/api/rest#get-mempool)
+///         - GET \<< >\>
 ///     - [TRANSACTIONS](https://mempool.space/docs/api/rest#get-cpfp)
+///         - GET \<< >\>
 ///     - [LIGHTNING](https://mempool.space/docs/api/rest#get-lightning-network-stats)
+///         - GET \<< >\>
 ///     - [ACCELERATOR (Public)](https://mempool.space/docs/api/rest#accelerator-estimate)
+///         - GET \<< >\>
 ///     - [ACCELERATOR (Authenticated)](https://mempool.space/docs/api/rest#accelerator-top-up-history)
+///         - GET \<< >\>
 ///
 ///         USAGE:
 ///       - mempool-space \--difficulty_adjustment (flagged)
