@@ -13,6 +13,13 @@
 //!
 //! <https://github.com/RandyMcMillan/mempool_space.git>
 
+//!
+//! USAGE:
+//! - mempool-space \--difficulty_adjustment (flagged)
+//! - mempool-space_difficulty_adjustment (executable)
+//!   1. Flags follow the mempool.space api/rest (replace dashes with underscores)
+//!   2. Flags invoke the executable
+
 use std::io::Read;
 
 //const API_VERSION: &str = "v1";
