@@ -122,32 +122,87 @@ pub fn blocks_bulk(min_height: &str, max_height: &str) {
 ///         - GET /api/address/:address/utxo \<<https://mempool.space/api/address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo>\>
 ///         - GET /api/v1/validate-address/:address \<<https://mempool.space/api/v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY>\>
 ///     - [BLOCKS](https://mempool.space/docs/api/rest#get-block)
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
-///         - GET \<< >\>
+///         - GET /api/block/:hash \<<https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce>\>
+///         - GET /api/block/:hash/header \<<https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/header>\>
+///         - GET /api/block-height/:height \<<https://mempool.space/api/block-height/615615>\>
+///         - GET /api/v1/mining/blocks/timestamp/:timestamp \<<https://mempool.space/api/v1/mining/blocks/timestamp/1672531200>\>
+///         - GET /api/block/:hash/raw \<<https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/raw>\>
+///         - GET /api/block/:hash/status \<<https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/status>\>
+///         - GET /api/blocks/tip/height \<<https://mempool.space/api/blocks/tip/height>\>
+///         - GET /api/blocks/tip/hash \<<https://mempool.space/api/blocks/tip/hash>\>
+///         - GET /api/block/:hash/txid/:index \<<https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txid/218>\>
+///         - GET /api/block/:hash/txids \<<https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txids>\>
+///         - GET /api/block/:hash/txs[/:start_index] \<<https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs>\>
+///         - GET /api/v1/blocks[/:startHeight] \<<https://mempool.space/api/v1/blocks/730000>\>
+///         - GET /api/v1/blocks-bulk/:minHeight[/:maxHeight] \<<https://mempool.space/api/v1/blocks-bulk/100000/100000>\> (Enterprise)
 ///     - [MINING](https://mempool.space/docs/api/rest#get-mining-pools)
-///         - GET \<< >\>
+///         - GET /api/v1/mining/pools[/:timePeriod] \<<https://mempool.space/api/v1/mining/pools/1w>\>
+///         - GET /api/v1/mining/pool/:slug \<<https://mempool.space/api/v1/mining/pool/antpool>\>
+///         - GET /api/v1/mining/hashrate/pools/[\:timePeriod] \<<https://mempool.space/api/v1/mining/hashrate/pools/1m>\>
+///         - GET /api/v1/mining/pool/:slug/hashrate \<<https://mempool.space/api/v1/mining/pool/foundryusa/hashrate>\>
+///         - GET /api/v1/mining/pool/:slug/blocks/[\:blockHeight] \<<https://mempool.space/api/v1/mining/pool/luxor/blocks/730000>\>
+///         - GET /api/v1/mining/hashrate/[\:timePeriod] \<<https://mempool.space/api/v1/mining/hashrate/3d>\>
+///         - GET /api/v1/mining/pool/:slug/blocks/[\:blockHeight] \<<https://mempool.space/api/v1/mining/pool/luxor/blocks/730000>\>
+///         - GET /api/v1/mining/difficulty-adjustments/[\:interval] \<<https://mempool.space/api/v1/mining/difficulty-adjustments/1m>\>
+///         - GET /api/v1/mining/reward-stats/:blockCount \<<https://mempool.space/api/v1/mining/reward-stats/100>\>
+///         - GET /api/v1/mining/blocks/fees/:timePeriod \<<https://mempool.space/api/v1/mining/blocks/fees/1w>\>
+///         - GET /api/v1/mining/blocks/rewards/:timePeriod \<<https://mempool.space/docs/api/rest#get-block-rewards>\>
+///         - GET /api/v1/mining/blocks/fee-rates/:timePeriod \<<https://mempool.space/api/v1/mining/blocks/fee-rates/1m>\>
+///         - GET /api/v1/mining/blocks/sizes-weights/:timePeriod \<<https://mempool.space/api/v1/mining/blocks/sizes-weights/3y>\>
+///         - GET /api/v1/mining/blocks/predictions/:timePeriod \<<https://mempool.space/api/v1/mining/blocks/predictions/3y>\>
+///         - GET /api/v1/mining/blocks/audit/score/:blockHash \<<https://mempool.space/api/v1/mining/blocks/audit/score/000000000000000000032535698c5b0c48283b792cf86c1c6e36ff84464de785>\>
+///         - GET /api/v1/mining/blocks/audit/scores/:startHeight \<<https://mempool.space/api/v1/mining/blocks/audit/scores/820000>\>
+///         - GET /api/v1/block/:blockHash/audit-summary \<<https://mempool.space/api/v1/block/00000000000000000000f218ceda7a5d9c289040b9c3f05ef9f7c2f4930e0123/audit-summary>\>
 ///     - [FEES](https://mempool.space/docs/api/rest#get-mempool-blocks-fees)
-///         - GET \<< >\>
+///         - GET /api/v1/fees/mempool-blocks \<<https://mempool.space/api/v1/fees/mempool-blocks>\>
+///         - GET /api/v1/fees/recommended \<<https://mempool.space/api/v1/fees/recommended>\>
 ///     - [MEMPOOL](https://mempool.space/docs/api/rest#get-mempool)
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
 ///         - GET \<< >\>
 ///     - [TRANSACTIONS](https://mempool.space/docs/api/rest#get-cpfp)
 ///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
 ///     - [LIGHTNING](https://mempool.space/docs/api/rest#get-lightning-network-stats)
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
 ///         - GET \<< >\>
 ///     - [ACCELERATOR (Public)](https://mempool.space/docs/api/rest#accelerator-estimate)
 ///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
 ///     - [ACCELERATOR (Authenticated)](https://mempool.space/docs/api/rest#accelerator-top-up-history)
+///         - GET \<< >\>
+///         - GET \<< >\>
+///         - GET \<< >\>
 ///         - GET \<< >\>
 ///
 ///         USAGE:
@@ -231,6 +286,7 @@ pub struct Args {
     /// - BLOCK <BLOCK_HASH> <TXS>
     /// `https://mempool.space/api/block/<BLOCK_HASH>/txs`
     pub block_txs: Option<String>,
+    /// mempool-space --block_txs <BLOCK_HASH> --block_start_index <BLOCK_INDEX>
     pub block_start_index: Option<String>,
 
     /// - V1 BLOCKS <BLOCK_HEIGHT>
