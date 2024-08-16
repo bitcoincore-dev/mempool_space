@@ -6,9 +6,11 @@
 //
 // Author: Simon Brummer (simon.brummer@posteo.de)
 
+#![warn(missing_docs, clippy::unwrap_used)]
 //! mempool_space, a mempool.space API lib.
 //!
 //! Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
+//!
 //! <https://github.com/RandyMcMillan/mempool_space.git>
 
 use std::io::Read;
@@ -71,10 +73,9 @@ pub use target::{Fqhn, IcmpTarget, Port, Status, Target, TcpTarget};
 #[cfg(feature = "async")]
 pub use async_target::{AsyncTarget, AsyncTargetExecutor, BoxedHandler, BoxedTarget, OldStatus};
 
-// //! A CLI tool for [`mempool_space`].
-// //!
-// //! [`mempool_space`]: https://github.com/randymcmillan/mempool_space
-// #![warn(missing_docs, clippy::unwrap_used)]
+/// A CLI tool for [`mempool_space`].
+///
+/// [`mempool_space`]: https://github.com/randymcmillan/mempool_space
 
 /// Command-line argument parser.
 pub mod args;
@@ -85,7 +86,7 @@ pub mod this_error;
 /// Upload handler.
 pub mod upload;
 
-use crate::args::{generic_sys_call, historical_price, Args};
+use crate::args::Args;
 use crate::config::Config;
 use crate::this_error::{Error, Result};
 use crate::upload::Uploader;
@@ -194,6 +195,7 @@ pub fn run(args: Args) -> Result<()> {
 //     a - b
 // }
 
+/// Be nice to mempool.space when testing
 pub fn wait(sleep: &str) {
     use std::process::Command;
     let sleep_cmd = Command::new("sleep").arg(sleep).output().expect("wait:sleep failed");
@@ -212,6 +214,7 @@ pub fn wait(sleep: &str) {
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
+    use crate::args::api;
 
     /// General
     /// https://mempool.space/docs/api/rest
@@ -221,7 +224,7 @@ mod tests {
         // GET /api/v1/difficulty-adjustment
         let binding = format!("v1/difficulty-adjustment").clone();
         let difficulty_adjustment: &str = blocking(&binding).expect("REASON");
-        let difficulty_adjustment = generic_sys_call("difficulty_adjustment", "extraneous_arg");
+        let difficulty_adjustment = api("difficulty_adjustment", "extraneous_arg");
         wait("1");
     }
     #[test]
@@ -229,15 +232,16 @@ mod tests {
         // GET /api/v1/prices
         let binding = format!("v1/prices").clone();
         let prices: &str = blocking(&binding).expect("REASON");
-        let prices = generic_sys_call("prices", "extraneous_arg");
+        let prices = api("prices", "extraneous_arg");
         wait("1");
     }
     #[test]
     fn test_historical_price() {
+        use crate::args::historical_price;
         // GET /api/v1/historical-price?currency=EUR&timestamp=1500000000
         let historical_price_json = historical_price(&"EUR", &"1500000000");
         print!("\n{{\"prices\":[{{\"time\":1499904000,\"EUR\":1964,\"USD\":2254.9}}],\"exchangeRates\":{{\"USDEUR\":0.92,\"USDGBP\":0.78,\"USDCAD\":1.38,\"USDCHF\":0.87,\"USDAUD\":1.53,\"USDJPY\":146.62}}}}\n");
-        let historical_prices = generic_sys_call("historical_price", "USD");
+        let historical_prices = api("historical_price", "USD");
         wait("1");
     }
 
@@ -247,7 +251,7 @@ mod tests {
         // GET /api/address/:address
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv").clone();
         let address: &str = blocking(&binding).expect("test_address failed");
-        let address = generic_sys_call("address", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        let address = api("address", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
@@ -255,7 +259,7 @@ mod tests {
         // GET /api/address/:address/txs
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs").clone();
         let address_txs: &str = blocking(&binding).expect("test_address_txs failed");
-        let address_txs = generic_sys_call("address_txs", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        let address_txs = api("address_txs", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
@@ -263,7 +267,7 @@ mod tests {
         // GET /api/address/:address/txs/chain
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain").clone();
         let address_txs_chain: &str = blocking(&binding).expect("REASON");
-        let address_txs_chain = generic_sys_call("address_txs_chain", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        let address_txs_chain = api("address_txs_chain", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
@@ -271,7 +275,7 @@ mod tests {
         // GET /api/address/:address/txs/mempool
         let binding = format!("address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool").clone();
         let address_txs_mempool: &str = blocking(&binding).expect("REASON");
-        let address_txs_mempool = generic_sys_call("address_txs_mempool", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
+        let address_txs_mempool = api("address_txs_mempool", "1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv");
         wait("1");
     }
     #[test]
@@ -295,7 +299,7 @@ mod tests {
         // GET /api/block/:hash
         let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce").clone();
         let block: &str = blocking(&binding).expect("an existing block hash is needed");
-        let block = generic_sys_call(
+        let block = api(
             "block",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce",
         );
@@ -306,7 +310,7 @@ mod tests {
         // GET /api/block/:hash/header
         let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce").clone();
         let block_header: &str = blocking(&binding).expect("an existing block hash is needed");
-        let block = generic_sys_call(
+        let block = api(
             "block_header",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce",
         );
@@ -317,7 +321,7 @@ mod tests {
         // GET /api/block-height:height
         let binding = format!("block-height/615615").clone();
         let block_height: &str = blocking(&binding).expect("an existing block hash is needed");
-        let block_height = generic_sys_call("block_height", "615615");
+        let block_height = api("block_height", "615615");
         wait("1");
     }
     #[test]
@@ -325,7 +329,7 @@ mod tests {
         // GET /api/v1/mining/blocks/timestamp/:timestamp
         let binding = format!("v1/mining/blocks/timestamp/1672531200").clone();
         let timestamp: &str = blocking(&binding).expect("an existing block hash is needed");
-        let timestamp = generic_sys_call("blocks_timestamp", "1672531200");
+        let timestamp = api("blocks_timestamp", "1672531200");
         wait("1");
     }
     #[test]
@@ -333,7 +337,7 @@ mod tests {
         // GET /api/block/:hash/raw
         let binding = format!("block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2").clone();
         let block_raw: &str = blocking(&binding).expect("an existing block hash is needed");
-        let block_raw = generic_sys_call(
+        let block_raw = api(
             "block_raw",
             "0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2",
         );
@@ -345,7 +349,7 @@ mod tests {
         // GET /api/block/:hash/status
         let binding = format!("block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2").clone();
         let block_raw: &str = blocking(&binding).expect("an existing block hash is needed");
-        let block_raw = generic_sys_call(
+        let block_raw = api(
             "block_status",
             "0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2",
         );
@@ -356,7 +360,7 @@ mod tests {
         // GET /api/blocks/tip/height
         let binding = format!("blocks/tip/height").clone();
         let block_raw: &str = blocking(&binding).expect("returns current block_height");
-        let block_raw = generic_sys_call("blocks_tip_height", "extraneous_arg");
+        let block_raw = api("blocks_tip_height", "extraneous_arg");
         wait("1");
     }
     #[test]
@@ -364,7 +368,7 @@ mod tests {
         // GET /api/blocks/tip/hash
         let binding = format!("blocks/tip/hash").clone();
         let block_raw: &str = blocking(&binding).expect("returns current block/tip/hash");
-        let block_raw = generic_sys_call("blocks_tip_hash", "extraneous_arg");
+        let block_raw = api("blocks_tip_hash", "extraneous_arg");
         wait("1");
     }
     #[test]
@@ -373,7 +377,7 @@ mod tests {
         let binding =
             format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txid/218").clone();
         let get_block_txid: &str = blocking(&binding).expect("returns current txid from block index");
-        let get_block_txid = generic_sys_call(
+        let get_block_txid = api(
             "block_txid",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txid/218",
         );
@@ -389,7 +393,7 @@ mod tests {
         // GET /api/block/:hash/txids
         let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txids").clone();
         let get_block_txid: &str = blocking(&binding).expect("returns current txids from block");
-        let get_block_txids = generic_sys_call(
+        let get_block_txids = api(
             "block_txid",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txids",
         );
@@ -403,19 +407,19 @@ mod tests {
         // )
         let binding = format!("block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs").clone();
         let block_txs: &str = blocking(&binding).expect("returns current txids from block");
-        let get_block_txs = generic_sys_call(
+        let get_block_txs = api(
             "block_txs",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs",
         );
-        let get_block_txs = generic_sys_call(
+        let get_block_txs = api(
             "block_txs",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs/0",
         );
-        let get_block_txs = generic_sys_call(
+        let get_block_txs = api(
             "block_txs",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs/1", //test if start_index_int % 25 == 0
         );
-        let get_block_txs = generic_sys_call(
+        let get_block_txs = api(
             "block_txs",
             "000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs/25",
         );
@@ -425,8 +429,8 @@ mod tests {
         // GET /api/v1/blocks[/:startHeight]
         let binding = format!("v1/blocks/730000").clone();
         let get_block_txid: &str = blocking(&binding).expect("returns current txid from block index");
-        let get_block_txid = generic_sys_call("blocks", "730000");
-        let blocks_tip_height = generic_sys_call("blocks_tip_height", "extraneous_arg");
+        let get_block_txid = api("blocks", "730000");
+        let blocks_tip_height = api("blocks_tip_height", "extraneous_arg");
         use crate::args::blocks;
         blocks(&"");
         blocks(&"0");
@@ -442,8 +446,8 @@ mod tests {
         let binding = format!("v1/blocks-bulk/730000/840000").clone();
         let get_block_txid: &str = blocking(&binding).expect("returns current txid from block index");
 
-        let get_block_txid = generic_sys_call("blocks_bulk", "730000/840000");
-        let blocks_tip_height = generic_sys_call("blocks_tip_height", "extraneous_arg");
+        let get_block_txid = api("blocks_bulk", "730000/840000");
+        let blocks_tip_height = api("blocks_tip_height", "extraneous_arg");
         use crate::args::blocks_bulk;
         blocks_bulk(&"0", &"0");
         blocks_bulk(&"0", &"1");

@@ -6,11 +6,11 @@ use std::process;
 
 use crate::blocking;
 
-/// mempool-space_ARG
-/// mempool-space --arg
-/// mempool-space_ARG_STRING
-/// mempool-space --arg_string
-pub fn generic_sys_call(option: &str, sub_string: &str) -> String {
+/// mempool-space --option_str sub_string
+///
+/// mempool-space_option_str sub_string
+///
+pub fn api(option: &str, sub_string: &str) -> String {
     use std::process::Command;
 
     //if sub_string == "v1" {
@@ -38,8 +38,20 @@ pub fn generic_sys_call(option: &str, sub_string: &str) -> String {
     result
     //}
 }
+
 /// GET /api/v1/historical-price?currency=CURRENCY&timestamp=TIMESTAMP
+///
 /// <https://mempool.space/docs/api/rest#get-historical-price>
+///
+/// CURRENCY [USD, EUR, GBP, CAD, CHF, AUD, JPY]
+///
+/// TIMESTAMP [$(date +%s), 1231006505]
+///
+/// USAGE:
+///
+/// `mempool-space --historical_price --currency USD --timestamp $(date +%s)`
+///
+/// `mempool-space_historical_price USD $(date +%s)`
 pub fn historical_price(currency: &str, timestamp: &str) {
     let _res = blocking(&format!(
         "v1/historical-price?currency={}&timestamp={}",
@@ -71,7 +83,7 @@ pub fn block_txs(block_hash: &str, start_index: &str) {
 /// <https://mempool.space/docs/api/rest#get-blocks>
 pub fn blocks(start_height: &str) {
     //TODO blocks_tip_height
-    let blocks_tip_height = generic_sys_call("blocks_tip_height", &"extraneous_arg");
+    let blocks_tip_height = api("blocks_tip_height", &"extraneous_arg");
     let blocks_tip_height_int = blocks_tip_height.parse::<i32>().unwrap_or(0);
     let start_height_int = start_height.parse::<i32>().unwrap_or(0);
     if start_height_int >= 0 && start_height_int <= blocks_tip_height_int {
@@ -91,7 +103,7 @@ pub fn blocks_bulk(min_height: &str, max_height: &str) {
     } else if min_height_int >= 0 && max_height_int >= 0 && min_height_int >= max_height_int {
         let _res = blocking(&format!("v1/blocks-bulk/{}/{}", max_height, min_height));
     } else {
-        let blocks_tip_height = generic_sys_call("blocks_tip_height", &"extraneous_arg");
+        let blocks_tip_height = api("blocks_tip_height", &"extraneous_arg");
         let _res = blocking(&format!("v1/blocks-bulk/{}/{}", min_height, blocks_tip_height));
     }
 }
@@ -99,7 +111,16 @@ pub fn blocks_bulk(min_height: &str, max_height: &str) {
 /// <https://mempool.space/docs/api/rest>
 /// - [API/REST](https://mempool.space/docs/api/rest)
 ///     - [GENERAL](https://mempool.space/docs/api/rest#get-difficulty-adjustment)
+///         - GET /api/v1/difficulty-adjustment \<<https://mempool.space/api/v1/difficulty-adjustment>\>
+///         - GET /api/v1/prices \<<https://mempool.space/api/v1/prices>\>
+///         - GET /api/v1/historical-price?currency=EUR&timestamp=1500000000 \<<https://mempool.space/api/v1/historical-price?currency=EUR&timestamp=1500000000>\>
 ///     - [ADDRESSES](https://mempool.space/docs/api/rest#get-address)
+///         - GET /api/address/:address \<<https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv>\>
+///         - GET /api/address/:address/txs \<<https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs>\>
+///         - GET /api/address/:address/txs/chain \<<https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain>\>
+///         - GET /api/address/:address/txs/mempool \<<https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool>\>
+///         - GET /api/address/:address/utxo \<<https://mempool.space/api/address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY/utxo>\>
+///         - GET /api/v1/validate-address/:address \<<https://mempool.space/api/v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY>\>
 ///     - [BLOCKS](https://mempool.space/docs/api/rest#get-block)
 ///     - [MINING](https://mempool.space/docs/api/rest#get-mining-pools)
 ///     - [FEES](https://mempool.space/docs/api/rest#get-mempool-blocks-fees)
@@ -173,9 +194,14 @@ pub struct Args {
     /// `https://mempool.space/api/blocks/tip/hash`
     pub blocks_tip_hash: Option<String>,
 
-    /// - BLOCK <BLOCK_HASH> <TXID> <INDEX>
-    /// `https://mempool.space/api/block/<TXID>/<INDEX>`
+    /// `https://mempool.space/api/block/<BLOCK_HASH>/<TXINDEX>`
+    ///
+    /// mempool-space --block_txid <BLOCK_HASH> --block_txindex <INT>
+    ///
+    /// mempool-space_block_txid <BLOCK_HASH> <TXINDEX>
+    ///
     pub block_txid: Option<String>,
+    ///
     pub block_txindex: Option<String>,
 
     /// - BLOCK <BLOCK_HASH> <TXIDS>
@@ -309,11 +335,11 @@ impl Args {
         // VERSION
         // GENERAL
         if matches.opt_present("difficulty_adjustment") {
-            generic_sys_call("difficulty_adjustment", &"v9999");
+            api("difficulty_adjustment", &"v9999");
             std::process::exit(0);
         }
         if matches.opt_present("prices") {
-            generic_sys_call("prices", &"v9999");
+            api("prices", &"v9999");
             std::process::exit(0);
         }
         if matches.opt_present("historical_price") {
@@ -340,67 +366,67 @@ impl Args {
         // ADDRESSES
         if matches.opt_present("address") {
             let address = matches.opt_str("address");
-            generic_sys_call("address", &address.unwrap());
+            api("address", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("address_txs") {
             let address = matches.opt_str("address_txs");
-            generic_sys_call("address_txs", &address.unwrap());
+            api("address_txs", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("address_txs_chain") {
             let address = matches.opt_str("address_txs_chain");
-            generic_sys_call("address_txs_chain", &address.unwrap());
+            api("address_txs_chain", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("address_txs_mempool") {
             let address = matches.opt_str("address_txs_mempool");
-            generic_sys_call("address_txs_mempool", &address.unwrap());
+            api("address_txs_mempool", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("validate_address") {
             let validate_address = matches.opt_str("validate_address");
-            generic_sys_call("validate_address", &validate_address.unwrap());
+            api("validate_address", &validate_address.unwrap());
             std::process::exit(0);
         }
 
         if matches.opt_present("block") {
             let block = matches.opt_str("block");
-            generic_sys_call("block", &block.unwrap());
+            api("block", &block.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("block_header") {
             let block_header = matches.opt_str("block_header");
-            generic_sys_call("block_header", &block_header.unwrap());
+            api("block_header", &block_header.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("block_height") {
             let block_height = matches.opt_str("block_height");
-            generic_sys_call("block_height", &block_height.unwrap());
+            api("block_height", &block_height.unwrap());
             std::process::exit(0);
         }
         //blocks_timestamp
         if matches.opt_present("blocks_timestamp") {
             let blocks_timestamp = matches.opt_str("blocks_timestamp");
-            generic_sys_call("blocks_timestamp", &blocks_timestamp.unwrap());
+            api("blocks_timestamp", &blocks_timestamp.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("block_raw") {
             let block_raw = matches.opt_str("block_raw");
-            generic_sys_call("block_raw", &block_raw.unwrap());
+            api("block_raw", &block_raw.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("block_status") {
             let block_status = matches.opt_str("block_status");
-            generic_sys_call("block_status", &block_status.unwrap());
+            api("block_status", &block_status.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("blocks_tip_height") {
-            generic_sys_call("blocks_tip_height", &"extraneous_arg");
+            api("blocks_tip_height", &"extraneous_arg");
             std::process::exit(0);
         }
         if matches.opt_present("blocks_tip_hash") {
-            generic_sys_call("blocks_tip_hash", &"extraneous_arg");
+            api("blocks_tip_hash", &"extraneous_arg");
             std::process::exit(0);
         }
         if matches.opt_present("block_txid") {
