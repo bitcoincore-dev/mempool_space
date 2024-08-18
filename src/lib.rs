@@ -7,10 +7,66 @@
 // Author: Simon Brummer (simon.brummer@posteo.de)
 
 #![warn(missing_docs, clippy::unwrap_used)]
+
+///
+/// A CLI tool for [`mempool_space`].
+///
+/// [`mempool_space`]: https://github.com/randymcmillan/mempool_space
+
+/// TESTING
+///
+/// TESTING 2
+///
+/// TESTING 2
+///
+/// TESTING 2
+///
+/// TESTING 2
+
+// #[warn(missing_docs, clippy::unwrap_used)]
+pub mod api;
+pub mod blockheight;
+pub mod blocking;
+pub mod error;
+pub mod resolve_policy;
+pub mod target;
+
+pub use error::{CheckTargetError, ParseTargetError, ResolveTargetError};
+pub use resolve_policy::ResolvePolicy;
+pub use target::{Fqhn, IcmpTarget, Port, Status, Target, TcpTarget};
+
+#[cfg(feature = "async")]
+pub use async_target::{AsyncTarget, AsyncTargetExecutor, BoxedHandler, BoxedTarget, OldStatus};
+
+/// Command-line argument parser.
+pub mod args;
+#[cfg(feature = "async")]
+pub mod async_target;
+
+/// Configuration file parser.
+pub mod config;
+/// Custom error implementation.
+pub mod this_error;
+/// Upload handler.
+pub mod upload;
+
+use crate::args::Args;
+use crate::config::Config;
+use crate::this_error::{Error, Result};
+use crate::upload::Uploader;
+// use colored::Colorize;
+use crossterm::style::Stylize;
+use std::fs;
+use std::io::IsTerminal;
 use std::io::Read;
-const API_VERSION: &str = "v1";
+use std::io::{self}; //, Read};
+
+use crate::blocking::blocking;
+
 const URL: &str = "https://mempool.space/api";
 
+// BOOM
+//
 /// mempool_space - a mempool.space API lib
 ///
 /// Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
@@ -24,38 +80,8 @@ const URL: &str = "https://mempool.space/api";
 ///   1. Flags follow the mempool.space api/rest (replace dashes with underscores)
 ///   2. Flags invoke the executable
 
-/// 
-
-///  `pub fn api(option: &str, sub_string: &str) -> String`
 ///
-pub fn api(option: &str, sub_string: &str) -> String {
-    use std::process::Command;
 
-    //if sub_string == "v1" {
-    //    print!("TODO: support --version v1 api versioning.");
-    //} else if sub_string == "v2" {
-    //    print!("TODO: support --version v2 api versioning.");
-    //} else {
-    let output = if cfg!(target_os = "windows") {
-        Command::new(format!("mempool-space_{}", option))
-            .args(["/C", sub_string])
-            .output()
-            .expect("failed to execute process")
-    } else {
-        Command::new(format!("mempool-space_{}", option))
-            .arg(sub_string)
-            //.arg("echo hello")
-            .output()
-            .expect("failed to execute process")
-    };
-
-    let result = String::from_utf8(output.stdout)
-        .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
-        .unwrap();
-    print!("{}", result);
-    result
-    //}
-}
 /// mempool_space - a mempool.space API lib
 ///
 /// Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
@@ -83,84 +109,6 @@ pub fn api(option: &str, sub_string: &str) -> String {
 ///
 /// mempool-space_block $(mempool-space_blocks_tip_hash)
 ///
-
-///  `pub fn blocking(api: &String) -> Result<&str>`
-pub fn blocking(api: &String) -> Result<&str> {
-    //print!("api={}", api);
-    let call = format!("{}/{}", URL, api);
-    let mut body = ureq::get(&call)
-        .call()
-        .expect("calls to blocking(api: &String) needs to include /v1/<api_endpoint> in some cases.")
-        .into_reader();
-    let mut buf = Vec::new();
-    body.read_to_end(&mut buf).unwrap();
-    if !api.ends_with("raw") {
-        //print!("!api.ends_with raw");
-        let text = match std::str::from_utf8(&buf) {
-            Ok(s) => s,
-            Err(_) => panic!("Invalid ASCII data"),
-        };
-        print!("{}", text);
-    } else {
-        if api.ends_with("raw") {
-            //print!("api.ends_with raw");
-            print!("{:?}", &buf);
-        }
-        if api.ends_with("something_else") {
-            //print!("api.ends_with something_else");
-            print!("{:?}", &buf);
-        }
-    }
-    Ok(api)
-}
-
-/// `pub mod blockheight`
-pub mod blockheight;
-/// `pub mod error`
-pub mod error;
-/// `pub mod resolve_policy`
-pub mod resolve_policy;
-/// `pub mod target`
-pub mod target;
-
-#[cfg(feature = "async")]
-/// `pub mod async_target`
-pub mod async_target;
-
-// Re-exports
-/// `pub use error`
-pub use error::{CheckTargetError, ParseTargetError, ResolveTargetError};
-/// `pub use resolve_policy`
-pub use resolve_policy::ResolvePolicy;
-/// `pub use target`
-pub use target::{Fqhn, IcmpTarget, Port, Status, Target, TcpTarget};
-
-#[cfg(feature = "async")]
-pub use async_target::{AsyncTarget, AsyncTargetExecutor, BoxedHandler, BoxedTarget, OldStatus};
-
-/// A CLI tool for [`mempool_space`].
-///
-/// [`mempool_space`]: https://github.com/randymcmillan/mempool_space
-
-/// Command-line argument parser.
-pub mod args;
-/// Configuration file parser.
-pub mod config;
-/// Custom error implementation.
-pub mod this_error;
-/// Upload handler.
-pub mod upload;
-
-use crate::args::Args;
-use crate::config::Config;
-use crate::this_error::{Error, Result};
-use crate::upload::Uploader;
-// use colored::Colorize;
-use std::fs;
-use std::io::IsTerminal;
-use std::io::{self}; //, Read};
-
-use crossterm::style::Stylize;
 
 /// Default name of the configuration file.
 const CONFIG_FILE: &str = "config.toml";
@@ -275,11 +223,12 @@ pub fn wait(sleep: &str) {
     // }
 }
 
+/// TESTS
 #[cfg(test)]
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
-    use crate::args::api;
+    use crate::api::api;
 
     /// General
     /// https://mempool.space/docs/api/rest

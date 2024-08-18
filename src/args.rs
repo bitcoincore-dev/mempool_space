@@ -5,7 +5,8 @@ use std::path::PathBuf;
 use std::process;
 
 use crate::api;
-use crate::blocking;
+use crate::api::api;
+use crate::blocking::blocking;
 
 /// GET /api/v1/historical-price?currency=CURRENCY&timestamp=TIMESTAMP
 ///
@@ -47,11 +48,11 @@ pub fn block_txs(block_hash: &str, start_index: &str) {
         let _res = blocking(&format!("block/{}/txs/{}", block_hash, &"0"));
     }
 }
+
 /// GET /api/v1/blocks[/:startHeight]
 /// <https://mempool.space/docs/api/rest#get-blocks>
 pub fn blocks(start_height: &str) {
-    //TODO blocks_tip_height
-    let blocks_tip_height = api("blocks_tip_height", &"extraneous_arg");
+    let blocks_tip_height = api::api("blocks_tip_height", &"extraneous_arg");
     let blocks_tip_height_int = blocks_tip_height.parse::<i32>().unwrap_or(0);
     let start_height_int = start_height.parse::<i32>().unwrap_or(0);
     if start_height_int >= 0 && start_height_int <= blocks_tip_height_int {
