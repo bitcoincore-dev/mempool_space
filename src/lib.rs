@@ -82,8 +82,59 @@
 //!	mempool-space \--validate_address 1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY
 //!
 //!	mempool-space_validate_address 1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY
-
+//
+//! ## [BLOCKS](https://mempool.space/docs/api/rest#get-block)
+//
 //!
+//! #### [GET /api/block/:hash](https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce)
+//!
+//!	mempool-space \--block 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce
+//!
+//!	mempool-space_block 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce
+//!
+//! #### [GET /api/block/:hash/header](https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/header)
+//!
+//!	mempool-space \--block_header 0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2
+//!
+//!	mempool-space_block_header 0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2
+//!
+//! #### [GET /api/block-height:height](https://mempool.space/api/block-height/615615)
+//!
+//!	mempool-space \--block_height 615615
+//!
+//!	mempool-space_block_height 615615
+//!
+//! #### [GET /api/v1/mining/blocks/timestamp/:timestamp](https://mempool.space/api/v1/mining/blocks/timestamp/1672531200)
+//!
+//!	mempool-space \--blocks_timestamp 1672531200
+//!
+//!	mempool-space_blocks_timestamp 1672531200
+//!
+//! #### [GET /api/block/:hash/raw](https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/raw)
+//!
+//!	mempool-space \--block_raw 0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2
+//!
+//!	mempool-space_block_raw 0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2
+//!
+//! #### [GET /api/block/:hash/status](https://mempool.space/api/block/0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2/status)
+//!
+//!	mempool-space \--block_status 0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2
+//!
+//!	mempool-space_block_status 0000000000000000000065bda8f8a88f2e1e00d9a6887a43d640e52a4c7660f2
+//!
+//! #### [GET /api/blocks/tip/height](https://mempool.space/api/blocks/tip/height)
+//!
+//!	mempool-space \--blocks_tip_height
+//!
+//!	mempool-space_blocks_tip_height
+//!
+//! #### [GET /api/blocks/tip/hash](https://mempool.space/api/blocks/tip/hash)
+//!
+//!	mempool-space \--blocks_tip_hash
+//!
+//!	mempool-space_blocks_tip_hash
+
+
 
 #![warn(missing_docs, clippy::unwrap_used)]
 
