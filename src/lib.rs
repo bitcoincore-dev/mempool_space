@@ -37,11 +37,11 @@
 //!
 //! #### [GET /api/v1/historical-price?currency=EUR&timestamp=1500000000](https://mempool.space/api/v1/historical-price?currency=EUR&timestamp=1500000000)
 //!
-//!	mempool-space \--historical_price \--currency usd \--timestamp utc_sec
+//!	mempool-space \--historical_price \--currency [USD, CAD, GBP, CHF, AUD, JPY] \--timestamp utc_sec
 //!
-//!	mempool-space \--historical_price \--currency eur \--timestamp 1500000000
+//!	mempool-space \--historical_price \--currency EUR \--timestamp 1500000000
 //!
-//!	mempool-space \--historical_price \--currency usd \--timestamp "$(date +%s)"
+//!	mempool-space \--historical_price \--currency USD \--timestamp $(date +%s)
 //!
 //
 //! ## [ADDRESSES](https://mempool.space/docs/api/rest#get-address)
