@@ -7,24 +7,82 @@
 // Author: Simon Brummer (simon.brummer@posteo.de)
 
 #![warn(missing_docs, clippy::unwrap_used)]
-//! mempool_space, a mempool.space API lib.
-//!
-//! Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
-//!
-//! <https://github.com/RandyMcMillan/mempool_space.git>
-
-//!
-//! USAGE:
-//! - mempool-space \--difficulty_adjustment (flagged)
-//! - mempool-space_difficulty_adjustment (executable)
-//!   1. Flags follow the mempool.space api/rest (replace dashes with underscores)
-//!   2. Flags invoke the executable
-
 use std::io::Read;
-
-//const API_VERSION: &str = "v1";
-//
+const API_VERSION: &str = "v1";
 const URL: &str = "https://mempool.space/api";
+
+/// mempool_space - a mempool.space API lib
+///
+/// Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
+///
+/// <https://github.com/RandyMcMillan/mempool_space.git>
+
+///
+/// USAGE:
+/// - mempool-space \--difficulty_adjustment (flagged)
+/// - mempool-space_difficulty_adjustment (executable)
+///   1. Flags follow the mempool.space api/rest (replace dashes with underscores)
+///   2. Flags invoke the executable
+
+/// 
+
+///  `pub fn api(option: &str, sub_string: &str) -> String`
+///
+pub fn api(option: &str, sub_string: &str) -> String {
+    use std::process::Command;
+
+    //if sub_string == "v1" {
+    //    print!("TODO: support --version v1 api versioning.");
+    //} else if sub_string == "v2" {
+    //    print!("TODO: support --version v2 api versioning.");
+    //} else {
+    let output = if cfg!(target_os = "windows") {
+        Command::new(format!("mempool-space_{}", option))
+            .args(["/C", sub_string])
+            .output()
+            .expect("failed to execute process")
+    } else {
+        Command::new(format!("mempool-space_{}", option))
+            .arg(sub_string)
+            //.arg("echo hello")
+            .output()
+            .expect("failed to execute process")
+    };
+
+    let result = String::from_utf8(output.stdout)
+        .map_err(|non_utf8| String::from_utf8_lossy(non_utf8.as_bytes()).into_owned())
+        .unwrap();
+    print!("{}", result);
+    result
+    //}
+}
+/// mempool_space - a mempool.space API lib
+///
+/// Author: @RandyMcMillan (randy.lee.mcmillan@gmail.com)
+///
+/// <https://github.com/RandyMcMillan/mempool_space.git>
+
+///
+/// USAGE:
+/// - mempool-space \--difficulty_adjustment (flagged)
+/// - mempool-space_difficulty_adjustment (executable)
+///   1. Flags follow the mempool.space api/rest (replace dashes with underscores)
+///   2. Flags invoke the executable
+
+/// mempool-space \--option_str
+///
+/// mempool-space \--blocks_tip_height
+///
+/// mempool-space \--blocks_tip_hash
+///
+/// mempool-space \--option_str arg
+///
+/// mempool-space \--block 00000000000000000002d5c6e3451f94af29a3606e42b3c8f1db3cdfdc2bc934
+///
+/// mempool-space \--block $(mempool-space \--blocks_tip_hash)
+///
+/// mempool-space_block $(mempool-space_blocks_tip_hash)
+///
 
 ///  `pub fn blocking(api: &String) -> Result<&str>`
 pub fn blocking(api: &String) -> Result<&str> {
