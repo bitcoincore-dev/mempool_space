@@ -205,7 +205,7 @@ pub struct Args {
     /// `https://mempool.space/address/<ADDRESS>/txs/mempool`
     pub address_txs_mempool: Option<String>,
     /// `https://mempool.space/api/address/<ADDRESS>/utxo`
-    pub address_utxos: Option<String>,
+    pub address_utxo: Option<String>,
     /// `https://mempool.space/api/validate-address/<ADDRESS>`
     pub validate_address: Option<String>,
 
@@ -334,7 +334,7 @@ impl Args {
             "address_txs_mempool api call",
             "ADDRESS_TXS_MEMPOOL",
         );
-        opts.optopt("", "address_utxos", "address_utxos api call", "ADDRESS_UTXOS");
+        opts.optopt("", "address_utxo", "address_utxos api call", "ADDRESS_UTXO");
         opts.optopt("", "validate_address", "validate an address", "VALIDATE_ADDRESS");
 
         // BLOCK/S
@@ -427,6 +427,11 @@ impl Args {
         if matches.opt_present("address_txs_mempool") {
             let address = matches.opt_str("address_txs_mempool");
             api("address_txs_mempool", &address.unwrap());
+            std::process::exit(0);
+        }
+        if matches.opt_present("address_utxo") {
+            let address = matches.opt_str("address_utxo");
+            api("address_utxo", &address.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("validate_address") {
@@ -550,7 +555,7 @@ impl Args {
             address_txs: matches.opt_str("address_txs"),
             address_txs_chain: matches.opt_str("address_txs_chain"),
             address_txs_mempool: matches.opt_str("address_txs_mempool"),
-            address_utxos: matches.opt_str("address_utxos"),
+            address_utxo: matches.opt_str("address_utxo"),
             validate_address: matches.opt_str("validate_address"),
 
             // BLOCK/S

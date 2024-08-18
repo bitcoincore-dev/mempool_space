@@ -97,7 +97,6 @@
 /// TESTING 2
 
 #[warn(missing_docs, clippy::unwrap_used)]
-
 pub mod api;
 pub mod blockheight;
 pub mod blocking;
