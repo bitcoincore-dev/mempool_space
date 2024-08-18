@@ -145,6 +145,16 @@
 //! mempool-space \--block_txids 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce
 //!
 //!	mempool-space_block_txids 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce
+//!
+//! #### [GET /api/block/:hash/txs/:start_index](https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txs/0) (start_index % 25 == 0)
+//!
+//! mempool-space \--block_txs 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce --start_index 0
+//!
+//! mempool-space \--block_txs 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce --start_index 25
+//!
+//!	mempool-space_block_txs 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce 0
+//!
+//!	mempool-space_block_txs 000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce 25
 
 #![warn(missing_docs, clippy::unwrap_used)]
 

@@ -254,8 +254,8 @@ pub struct Args {
     /// - BLOCK <BLOCK_HASH> <TXS>
     /// `https://mempool.space/api/block/<BLOCK_HASH>/txs`
     pub block_txs: Option<String>,
-    /// mempool-space --block_txs <BLOCK_HASH> --block_start_index <BLOCK_INDEX>
-    pub block_start_index: Option<String>,
+    /// mempool-space --block_txs <BLOCK_HASH> --start_index <START_INDEX>
+    pub start_index: Option<String>,
 
     /// - V1 BLOCKS <BLOCK_HEIGHT>
     /// `https://mempool.space/api/v1/blocks/<BLOCKS_START_HEIGHT>`
@@ -352,7 +352,7 @@ impl Args {
         opts.optopt("", "block_txids", "block txids api call", "BLOCK_TXIDS");
 
         opts.optopt("", "block_txs", "block txs api call", "BLOCK_TXS");
-        opts.optopt("", "block_start_index", "block txs api call", "BLOCK_START_INDEX");
+        opts.optopt("", "start_index", "block txs api call", "START_INDEX");
 
         opts.optopt("", "blocks", "block txids api call", "BLOCKS_START_HEIGHT");
         opts.optopt("", "blocks_bulk", "block txids api call", "BLOCKS_BULK");
@@ -491,8 +491,8 @@ impl Args {
         }
         if matches.opt_present("block_txs") {
             let arg_block_txs = matches.opt_str("block_txs"); //expect a block_hash
-            let arg_block_start_index = matches.opt_str("block_start_index");
-            block_txs(&arg_block_txs.unwrap(), &arg_block_start_index.unwrap());
+            let arg_start_index = matches.opt_str("start_index");
+            block_txs(&arg_block_txs.unwrap(), &arg_start_index.unwrap());
             std::process::exit(0);
         }
         if matches.opt_present("blocks") {
@@ -597,7 +597,7 @@ impl Args {
             // BLOCK BLOCK_HASH TXS
             // https://mempool.space/api/block/<block_hash>/<txs>
             block_txs: matches.opt_str("block_txs"),
-            block_start_index: matches.opt_str("block_start_index"),
+            start_index: matches.opt_str("start_index"),
 
             // V1 BLOCKS
             // https://mempool.space/api/v1/blocks/<BLOCK_HEIGHT>"
