@@ -1,10 +1,227 @@
-// Originally based on the reachable repo.
-//
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-//
-// Author: Simon Brummer (simon.brummer@posteo.de)
+//! # mempool-space (command line utility)
+//!
+//! cargo install \--git <https://github.com/RandyMcMillan/mempool_space.git>
+//!
+//! cargo add \--git <https://github.com/RandyMcMillan/mempool_space.git>
+
+//! ## CLI: [mempool-space](https://docs.rs/mempool_space/latest/mempool_space) \--option arg<sub>1</sub> ... \--option arg<sub>n</sub>
+//!
+//!     mempool-space  --option
+//!     mempool-space  --option arg
+//!     mempool-space  --option arg --option arg
+//!
+//! ## BIN: mempool-space_option arg<sub>1</sub> ... arg<sub>n</sub>
+//!
+//!     mempool-space_option
+//!     mempool-space_option arg
+//!     mempool-space_option arg arg
+//!
+
+//! ## [GENERAL](https://mempool.space/docs/api/rest#get-difficulty-adjustment)
+
+//! ##### [GET /api/v1/difficulty-adjustment](https://mempool.space/api/v1/difficulty-adjustment)
+//!
+//!     mempool-space --difficulty_adjustment
+//!     mempool-space_difficulty_adjustment
+//! <hr>
+//!
+//! ##### [GET /api/v1/prices](https://mempool.space/api/v1/prices)
+//!
+//!     mempool-space --prices
+//!     mempool-space_prices
+//! <hr>
+//!
+//! ##### [GET /api/v1/historical-price?currency=EUR&timestamp=1500000000](https://mempool.space/api/v1/historical-price?currency=EUR&timestamp=1500000000)
+//!
+//!     mempool-space --historical_price --currency [USD EUR GBP CAD CHF AUD JPY] --timestamp UTC_SECS
+//!     mempool-space --historical_price --currency EUR --timestamp 1500000000
+//!     mempool-space --historical_price --currency USD --timestamp $(date +%s)
+//! <hr>
+//!
+//!
+//! ## [ADDRESSES](https://mempool.space/docs/api/rest#get-address)
+//!
+//! ##### [GET /api/address:address](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv)
+//!
+//!     mempool-space --address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!     mempool-space_address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//! <hr>
+//!
+//! ##### [GET /api/address:address/txs](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs)
+//!
+//!     mempool-space --address_txs 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!     mempool-space_address_txs 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//! <hr>
+//!
+//! ##### [GET /api/address:address/txs/chain](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain)
+//!
+//!     mempool-space --address_txs_chain 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!     mempool-space_address_txs_chain 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//! <hr>
+//!
+//! ##### [GET /api/address:address/txs/mempool](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool) (may be empty for test address)
+//!
+//!     mempool-space --address_txs_mempool 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!     mempool-space_address_txs_mempool 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//! <hr>
+//!
+//! ##### [GET /api/address:address/utxo](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/utxo)
+//!
+//!     mempool-space --address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!     mempool-space_address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//! <hr>
+
+//!
+//!
+//!     mempool-space_block
+//!
+//!     mempool-space_block_audit_score
+//!
+//!     mempool-space_block_audit_scores
+//!
+//!     mempool-space_block_audit_summary
+//!
+//!     mempool-space_block_feerates
+//!
+//!     mempool-space_block_header
+//!
+//!     mempool-space_block_height
+//!
+//!     mempool-space_block_predictions
+//!
+//!     mempool-space_block_raw
+//!
+//!     mempool-space_block_rewards
+//!
+//!     mempool-space_block_sizes_and_weights
+//!
+//!     mempool-space_block_status
+//!
+//!     mempool-space_block_timestamp
+//!
+//!     mempool-space_block_txid
+//!
+//!     mempool-space_block_txids
+//!
+//!     mempool-space_block_txs
+//!
+//!     mempool-space_blockheight
+//!
+//!     mempool-space_blocks
+//!
+//!     mempool-space_blocks_bulk
+//!
+//!     mempool-space_blocks_height
+//!
+//!     mempool-space_blocks_timestamp
+//!
+//!     mempool-space_blocks_tip
+//!
+//!     mempool-space_blocks_tip_hash
+//!
+//!     mempool-space_blocks_tip_height
+//!
+//!     mempool-space_children_pay_for_parent
+//!
+//!
+//! ##### [GET /api/v1/difficulty-adjustment](https://mempool.space/api/v1/difficulty-adjustment)
+//!
+//!     mempool-space --difficulty_adjustment
+//!     mempool-space_difficulty_adjustment
+//! <hr>
+//!
+//!     mempool-space_hashrate
+//!
+//!     mempool-space_historical_price
+//!
+//!     mempool-space_lighting_channel
+//!
+//!     mempool-space_lighting_channel_geodata
+//!
+//!     mempool-space_lighting_channel_geodata_for_node
+//!
+//!     mempool-space_lighting_channels_from_node_pubkey
+//!
+//!     mempool-space_lighting_channels_from_txid
+//!
+//!     mempool-space_lighting_isp_nodes
+//!
+//!     mempool-space_lighting_network_status
+//!
+//!     mempool-space_lighting_node_stats
+//!
+//!     mempool-space_lighting_node_stats_per_country
+//!
+//!     mempool-space_lighting_nodes_channels
+//!
+//!     mempool-space_lighting_nodes_in_country
+//!
+//!     mempool-space_lighting_nodes_stats_per_isp
+//!
+//!     mempool-space_lighting_top_nodes
+//!
+//!     mempool-space_lighting_top_nodes_by_connectivity
+//!
+//!     mempool-space_lighting_top_nodes_by_liquidity
+//!
+//!     mempool-space_lighting_top_oldests_nodes
+//!
+//!     mempool-space_mempool
+//!
+//!     mempool-space_mempool_blocks_fees
+//!
+//!     mempool-space_mempool_full_rbf_transactions
+//!
+//!     mempool-space_mempool_rbf_transactions
+//!
+//!     mempool-space_mempool_recent
+//!
+//!     mempool-space_mining_blocks_timestamp
+//!
+//!     mempool-space_mining_pool
+//!
+//!     mempool-space_mining_pool_blocks
+//!
+//!     mempool-space_mining_pool_hashrate
+//!
+//!     mempool-space_mining_pool_hashrates
+//!
+//!     mempool-space_mining_pools
+//!
+//!     mempool-space_post_transaction
+//!
+//!     mempool-space_prices
+//!
+//!     mempool-space_reachable
+//!
+//!     mempool-space_recomended_fees
+//!
+//!     mempool-space_reward_stats
+//!
+//!     mempool-space_splash
+//!
+//!     mempool-space_transaction
+//!
+//!     mempool-space_transaction_hex
+//!
+//!     mempool-space_transaction_merkle_block_proof
+//!
+//!     mempool-space_transaction_merkle_proof
+//!
+//!     mempool-space_transaction_outspend
+//!
+//!     mempool-space_transaction_outspends
+//!
+//!     mempool-space_transaction_raw
+//!
+//!     mempool-space_transaction_rbf_timeline
+//!
+//!     mempool-space_transaction_status
+//!
+//!     mempool-space_transaction_times
+//!
+//!     mempool-space_validate_address
+//!
 
 #![warn(missing_docs, clippy::unwrap_used)]
 
@@ -23,7 +240,8 @@
 ///
 /// TESTING 2
 
-// #[warn(missing_docs, clippy::unwrap_used)]
+#[warn(missing_docs, clippy::unwrap_used)]
+
 pub mod api;
 pub mod blockheight;
 pub mod blocking;
