@@ -1,64 +1,43 @@
-# reachable
+## mempool_space
 
-Rust crate to check if a "Target" is available. The crate comes with the trait
-"Target" and ICMP/TCP based implementations of it. Additionally, the crate offers
-an async task executor to perform availability checks of "Targets" on a regular basis.
+## install
 
-## Usage
+`cargo install mempool_space`
 
-With this crate you can easily check if a computer is currently reachable over the network.
-Since all targets are implementations of trait "Target" the availability check behavior is customizable.
-For example, it is easy to implement a custom Target to check if a Process is
-running or not.
+`cargo-binstall mempool_space`
 
-## Example (from examples/usage/src/main.rs)
 
-```rust
-use std::str::FromStr;
+## build and install from source
 
-use reachable::*;
+##### `git clone https://github.com/RandyMcMillan/mempool_space.git`
 
-fn main() {
-    // Construct ICMP Target check if the target is availabile
-    let icmp_target = IcmpTarget::from_str("www.google.de").unwrap();
-    match icmp_target.check_availability() {
-        Ok(status) => println!("{} is {}", icmp_target.get_id(), status),
-        Err(error) => println!("Check failed for {} reason {}", icmp_target.get_id(), error),
-    }
-}
-```
+##### `cd mempool_space && cargo install --path .`
 
-## Async Example (from examples/async_usage/src/main.rs)
+###### or
 
-```rust
-use std::str::FromStr;
-use std::thread::sleep;
-use std::time::Duration;
+##### make cargo-i
 
-use reachable::*;
+<hr>
 
-fn main() {
-    // Setup AsyncTargets
-    let icmp_target = IcmpTarget::from_str("www.google.de").unwrap();
-    let tcp_target = TcpTarget::from_str("www.google.de:80").unwrap();
+## [mempool_space::args::Args](https://docs.rs/mempool_space/latest/mempool_space/args/struct.Args.html)
 
-    let handler = |target: &dyn Target, status, old_status, error| {
-        print!("Target \"{}\"", target.get_id());
-        print!(", old status \"{}\"", old_status);
-        print!(", new status \"{}\"", status);
-        match error {
-            None => println!(""),
-            Some(err) => println!(", Error: \"{}\"", err),
-        }
-    };
+### USAGE (example):
 
-    // Spawn Async execution
-    let mut exec = AsyncTargetExecutor::new();
-    exec.start(vec![
-        AsyncTarget::from((icmp_target, handler, Duration::from_secs(1))),
-        AsyncTarget::from((tcp_target, handler, Duration::from_secs(1))),
-    ]);
-    sleep(Duration::from_secs(3));
-    exec.stop();
-}
-```
+$`mempool-space --address` \<ADDRESS\>
+
+$`mempool-space_address` \<ADDRESS\>
+
+$`mempool-space --address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv`
+
+$`mempool-space_address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv`
+
+- Flags follow the [mempool.space](https://mempool.space/docs/api/rest)/[api/rest](https://mempool.space/docs/api/rest) (replace dashes with underscores)
+
+- Flags invoke the executable with args
+
+
+## Shell Command Examples
+
+$`mempool-space --block $(mempool-space --block_height 856379)`
+
+$` mempool-space --block_header $(mempool-space --block_height 856379)`

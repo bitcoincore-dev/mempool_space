@@ -85,9 +85,7 @@ pub struct AsyncTargetExecutor {
 impl AsyncTargetExecutor {
     /// Construct a new [AsyncTargetExecutor]
     pub fn new() -> Self {
-        AsyncTargetExecutor {
-            worker: None,
-        }
+        AsyncTargetExecutor { worker: None }
     }
 
     /// Start periodic availability checks for all given targets
@@ -100,7 +98,7 @@ impl AsyncTargetExecutor {
     /// # Example
     /// ```
     /// # use std::{str::FromStr, thread::sleep, time::Duration};
-    /// # use reachable::*;
+    /// # use mempool_space::*;
     ///
     /// // Setup AsyncTarget
     /// let target = IcmpTarget::from_str("127.0.0.1").unwrap();
@@ -217,10 +215,9 @@ mod tests {
     fn async_target_call_behavior() {
         // Expectency: This Test verifies the basic behavior as specified.
         // 1) First call: old_status is Status::Unknown, status depends on the result check_availability
-        // 2) Next calls: old_status contains the status of the previous call and status contains
-        //    the result of check_availability
-        // 3) On Error: status contains Status::Unknown and error contains the occurred
-        //    CheckTargetError
+        // 2) Next calls: old_status contains the status of the previous call and status contains the result of
+        //    check_availability
+        // 3) On Error: status contains Status::Unknown and error contains the occurred CheckTargetError
 
         // Prepare Mock
         let mut mock = MockTarget::new();

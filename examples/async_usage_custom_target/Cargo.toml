@@ -1,10 +1,17 @@
 [package]
 name = "async_usage_custom_target"
-version = "0.1.0"
+version = { workspace = true }
 edition = "2021"
 authors = ["Simon Brummer <simon.brummer@posteo.de>"]
 license = "MPL-2.0"
-description = "Example: async usage of reachable with custom target"
+description = "Example: async usage of mempool_space with custom target"
+homepage = "https://github.com/randymcmillan/mempool_space"
+
+[package.metadata.wix]
+upgrade-guid = "25C87D23-4525-497E-BD5D-82AE840C99F2"
+path-guid = "D6783261-D9DD-4424-A6CD-4FCB05BC1CFB"
+license = false
+eula = false
 
 [dependencies]
-reachable = {path = "../..", features = ["async"]}
+mempool_space = {path = "../..", features = ["async"]}

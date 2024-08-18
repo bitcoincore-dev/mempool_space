@@ -1,16 +1,16 @@
 # General formatting
 max_width = 120
-empty_item_single_line = false
-struct_lit_single_line = false
+#empty_item_single_line = false
+#struct_lit_single_line = false
 
 # Comment related
-comment_width = 120
-wrap_comments = true
-normalize_comments = true
+# comment_width = 120
+# wrap_comments = true
+# normalize_comments = true
 
 # Import related
-imports_granularity = "Module"
+# imports_granularity = "Module"
 
 # Warning related
-report_fixme = "Always"
-report_todo = "Always"
+# report_fixme = "Always"
+# report_todo = "Always"

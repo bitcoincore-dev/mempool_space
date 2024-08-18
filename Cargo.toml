@@ -1,22 +1,59 @@
+[workspace.package]
+version = "0.0.25"
+
 [package]
-name = "reachable"
-version = "0.2.2"
+name = "mempool_space"
+version = { workspace = true }
 edition = "2021"
-authors = ["Simon Brummer <simon.brummer@posteo.de>"]
-description = "Check if a Target (ICMP, TCP, custom) is reachable."
+authors = ["RandyMcMillan <randy.lee.mcmillan@gmail.com>", "Simon Brummer <simon.brummer@posteo.de>"]
+description = "mempool.space api interface."
 license = "MPL-2.0"
 readme = "README.md"
-repository = "https://github.com/brummer-simon/reachable.git"
-keywords = ["network", "async"]
+repository = "https://github.com/randymcmillan/mempool_space.git"
+homepage = "https://github.com/randymcmillan/mempool_space"
+keywords = ["bitcoin", "mempool"]
 categories = ["network-programming"]
 
+## mempool-space
+[[bin]]
+name = "mempool-space"
+path = "src/bin/mempool-space.rs"
+doc = true
+
+[package.metadata.wix]
+upgrade-guid = "5D3A3DB4-15D1-47AF-BE84-D3A6F541BB8B"
+path-guid = "60912461-41F2-4FD0-BD2E-29E3D03F2AE9"
+license = false
+eula = false
+
 [dependencies]
-dns-lookup = {version = "1.0.7"}
-futures    = {version = "0.3.17", optional = true}
-tokio      = {version = "1.12.0", optional = true, features = ["rt-multi-thread", "sync", "time", "macros"]}
+anyhow = "1.0.86"
+ascii = "1.1.0"
+crossterm = "0.28.1"
+dirs-next = "2.0.0"
+dns-lookup = { version = "1.0.7" }
+futures    = { version = "0.3.17", optional = true }
+getopts = "0.2.21"
+## colored = "2.1.0"
+indicatif = "0.17.8"
+multipart = { version = "0.18.0", default-features = false, features = [
+  "client",
+] }
+ratatui = { version = "0.28.0", features = ["all-widgets"] }
+ratatui-splash-screen = "0.1.3"
+reqwest = { version = "0.11", default-features = false, features = ["blocking", "json", "rustls-tls-webpki-roots"] }
+
+serde = { version = "1.0.205", default-features = false, features = ["derive"] }
+thiserror = "1.0.63"
+
+tokio      = { version = "1.12.0", optional = true, features = ["rt-multi-thread", "sync", "time", "macros"] }
+toml = "0.8.19"
+ureq = { version = "2.10.1", features = ["json"] }
+url = "2.5.2"
 
 [dev-dependencies]
-mockall = {version = "0.10.2"}
+axoupdater = "0.7.0"
+mockall = { version = "0.10.2" }
 
 [features]
 default = ["async"]
@@ -24,7 +61,31 @@ async   = ["futures", "tokio"]
 
 [workspace]
 members = [
-    "examples/usage",
     "examples/async_usage",
     "examples/async_usage_custom_target",
+    "examples/usage",
 ]
+
+# Config for 'cargo dist'
+[workspace.metadata.dist]
+# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.14.1"
+# CI backends to support
+ci = "github"
+# The installers to generate for each app
+installers = ["shell", "homebrew"]
+# A GitHub repo to push Homebrew formulas to
+tap = "randymcmillan/homebrew-randymcmillan"
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-unknown-linux-musl"]
+# Publish jobs to run in CI
+publish-jobs = ["homebrew"]
+# Publish jobs to run in CI
+pr-run-mode = "plan"
+# Whether to install an updater program
+install-updater = true
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
