@@ -161,6 +161,12 @@
 //! mempool-space \--blocks 730000
 //!
 //!	mempool-space_blocks 730000
+//!
+//! #### [GET /api/v1/blocks-bulk/:minHeight[/:maxHeight]](https://mempool.space/api/v1/blocks-bulk/100000/100000)
+//!
+//! mempool-space \--blocks_bulk \--min_height 730000 \--max_height 840000
+//!
+//!	mempool-space_blocks_bulk 730000 840000
 
 #![warn(missing_docs, clippy::unwrap_used)]
 
@@ -603,8 +609,13 @@ mod tests {
         let blocks_tip_height = api("blocks_tip_height", "extraneous_arg");
         use crate::args::blocks;
         blocks(&"");
+        wait("1");
         blocks(&"0");
+        wait("1");
+        blocks(&"25");
+        wait("1");
         blocks(&"730000");
+        wait("1");
         blocks(&blocks_tip_height);
         wait("1");
     }
@@ -622,6 +633,7 @@ mod tests {
         blocks_bulk(&"0", &"0");
         blocks_bulk(&"0", &"1");
         blocks_bulk(&"730000", &"840000");
+        blocks_bulk(&"730000", &blocks_tip_height);
         wait("1");
     }
     #[test]
