@@ -48,7 +48,6 @@ pub fn block_txs(block_hash: &str, start_index: &str) {
         let _res = blocking(&format!("block/{}/txs/{}", block_hash, &"0"));
     }
 }
-
 /// GET /api/v1/blocks[/:startHeight]
 /// <https://mempool.space/docs/api/rest#get-blocks>
 pub fn blocks(start_height: &str) {
