@@ -25,21 +25,23 @@
 //
 //! #### [GET /api/v1/difficulty-adjustment](https://mempool.space/api/v1/difficulty-adjustment)
 //!
-//!	mempool-space --difficulty_adjustment
+//!	mempool-space \--difficulty_adjustment
+//!
 //!	mempool-space_difficulty_adjustment
 //!
 //! #### [GET /api/v1/prices](https://mempool.space/api/v1/prices)
 //!
-//!	mempool-space --prices
+//!	mempool-space \--prices
+//!
 //!	mempool-space_prices
 //!
 //! #### [GET /api/v1/historical-price?currency=EUR&timestamp=1500000000](https://mempool.space/api/v1/historical-price?currency=EUR&timestamp=1500000000)
 //!
-//!	mempool-space --historical_price --currency usd --timestamp utc_sec
+//!	mempool-space \--historical_price \--currency usd \--timestamp utc_sec
 //!
-//!	mempool-space --historical_price --currency eur --timestamp 1500000000
+//!	mempool-space \--historical_price \--currency eur \--timestamp 1500000000
 //!
-//!	mempool-space --historical_price --currency usd --timestamp "$(date +%s)"
+//!	mempool-space \--historical_price \--currency usd \--timestamp "$(date +%s)"
 //!
 //
 //! ## [ADDRESSES](https://mempool.space/docs/api/rest#get-address)
@@ -47,31 +49,31 @@
 //!
 //! #### [GET /api/address:address](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv)
 //!
-//!	mempool-space --address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!	mempool-space \--address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //!	mempool-space_address 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //! #### [GET /api/address:address/txs](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs)
 //!
-//!	mempool-space --address_txs 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!	mempool-space \--address_txs 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //!	mempool-space_address_txs 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //! #### [GET /api/address:address/txs/chain](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/chain)
 //!
-//!	mempool-space --address_txs_chain 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!	mempool-space \--address_txs_chain 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //!	mempool-space_address_txs_chain 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //! #### [GET /api/address:address/txs/mempool](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/txs/mempool) (may be empty for test address)
 //!
-//!	mempool-space --address_txs_mempool 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!	mempool-space \--address_txs_mempool 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //!	mempool-space_address_txs_mempool 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //! #### [GET /api/address:address/utxo](https://mempool.space/api/address/1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv/utxo)
 //!
-//!	mempool-space --address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!	mempool-space \--address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //!	mempool-space_address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 
