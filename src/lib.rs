@@ -76,6 +76,12 @@
 //!	mempool-space \--address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
 //!
 //!	mempool-space_address_utxo 1wiz18xYmhRX6xStj2b9t1rwWX4GKUgpv
+//!
+//! #### [GET /api/v1/validate-address/:address](https://mempool.space/api/v1/validate-address/1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY)
+//!
+//!	mempool-space \--validate_address 1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY
+//!
+//!	mempool-space_validate_address 1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY
 
 //!
 
